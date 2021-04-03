@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#5834AA</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#1D706F</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="toolbar_color">#023535</color>
+    <color name="dashboard_color">#FF023535</color>
+    <color name="income_color">#FF5834AA</color>
+    <color name="expense_color">#FFB59B4C</color>
+</resources>

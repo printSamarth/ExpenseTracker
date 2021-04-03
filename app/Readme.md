@@ -1,0 +1,1 @@
+Expense tracker app. Stores income and expense data.
