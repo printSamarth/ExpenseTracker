@@ -1,5 +1,6 @@
 package com.example.expensetracker;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,7 +11,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.expensetracker.Model.Data;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -21,6 +26,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.text.DateFormat;
+import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -38,6 +46,13 @@ public class IncomeFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private TextView incomeTotal;
+    // Update data.
+    private EditText edtAmount, edtType;
+    private Button btnUpdate, btnDelete;
+
+    private String type;
+    private int amount;
+    private String post_key;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -134,6 +149,17 @@ public class IncomeFragment extends Fragment {
                 myViewHolder.setType(data.getType());
                 myViewHolder.setDate(data.getDate());
                 myViewHolder.setAmount(data.getAmount());
+                myViewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        post_key = getRef(i).getKey();
+
+                        type = data.getType();
+                        amount = data.getAmount();
+                        updateDataItem();
+
+                    }
+                });
             }
         };
         recyclerView.setAdapter(adapter);
@@ -161,5 +187,49 @@ public class IncomeFragment extends Fragment {
             String a = String.valueOf(amt);
             mAmt.setText(a);
         }
+    }
+
+    private void updateDataItem(){
+        AlertDialog.Builder mydialog = new AlertDialog.Builder(getActivity());
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
+        View myView = inflater.inflate(R.layout.update_data_layout, null);
+        mydialog.setView(myView);
+
+        edtAmount = myView.findViewById(R.id.amount_edt);
+        edtType = myView.findViewById(R.id.type_edt);
+        btnUpdate = myView.findViewById(R.id.btnUpdate);
+        btnDelete = myView.findViewById(R.id.btnDelete);
+
+        //To add already present data in update dialog.
+        edtType.setText(type);
+        edtType.setSelection(type.length());
+
+        edtAmount.setText(String.valueOf(amount));
+        edtAmount.setSelection(String.valueOf(amount).length());
+
+        AlertDialog dialog = mydialog.create();
+
+        btnUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                type = edtType.getText().toString().trim();
+                String amount_string = edtAmount.getText().toString().trim();
+                amount  = Integer.parseInt(amount_string);
+                String mDate = DateFormat.getDateInstance().format(new Date());
+                Data data = new Data(amount, type, post_key,mDate);
+                mIncomeDatabase.child(post_key).setValue(data);
+                dialog.dismiss();
+                Toast.makeText(myView.getContext(), "Data updated", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+
     }
 }
