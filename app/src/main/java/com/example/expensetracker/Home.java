@@ -6,6 +6,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -19,6 +20,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -30,7 +32,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     private IncomeFragment incomeFragment;
     private ExpenseFragment expenseFragment;
     private DashBoardFragment dashBoardFragment;
-
+    private FirebaseAuth mAuth;
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +42,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         Toolbar toolbar = findViewById(R.id.mytoolbar);
         toolbar.setTitle("Expense Tracker");
         setSupportActionBar(toolbar);
-
+        mAuth = FirebaseAuth.getInstance();
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open
         , R.string.navigation_drawer_close);
@@ -112,6 +114,10 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
             case R.id.expense:
                 fragment = new ExpenseFragment();
+                break;
+            case R.id.logout:
+                mAuth.signOut();
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 break;
         }
         if(fragment != null){

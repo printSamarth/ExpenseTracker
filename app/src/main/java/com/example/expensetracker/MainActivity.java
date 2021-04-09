@@ -17,6 +17,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
     private EditText mEmail;
@@ -38,7 +39,11 @@ public class MainActivity extends AppCompatActivity {
         mSignUp = findViewById(R.id.signup_registration);
         mDialog = new ProgressDialog(this);
         mAuth = FirebaseAuth.getInstance();
-
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            // User is signed in
+            startActivity(new Intent(getApplicationContext(), Home.class));
+        }
 
         login_btn.setOnClickListener(new View.OnClickListener() {
             @Override

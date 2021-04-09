@@ -27,12 +27,13 @@
                     android:gravity="center"
                     android:layout_weight="1"
                     android:layout_height="wrap_content">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="Income"
                         android:textAppearance="?android:textAppearanceLarge"
-                        android:textColor="@color/black"
-                        android:text="Income"/>
+                        android:textColor="@color/black" />
 
                 </RelativeLayout>
 

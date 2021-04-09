@@ -225,8 +225,11 @@ public class IncomeFragment extends Fragment {
 
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
+                mIncomeDatabase.child(post_key).removeValue();
                 dialog.dismiss();
+                Toast.makeText(myView.getContext(), "Data removed", Toast.LENGTH_SHORT).show();
             }
         });
         dialog.show();

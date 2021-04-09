@@ -1,5 +1,7 @@
 package com.example.expensetracker;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,8 +12,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.expensetracker.Model.Data;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -22,6 +27,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.text.DateFormat;
+import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,7 +42,16 @@ public class ExpenseFragment extends Fragment {
     private FirebaseAuth mAuth;
     private DatabaseReference mExpenseDatabase;
 
+    //Edit text
+    private EditText editAmount;
+    private EditText editType;
+    private Button btnUpdate, btnDelete;
 
+    //Data variable
+    private String type;
+    private int amount;
+
+    private String post_key;
     //Recycler view.
 
     private RecyclerView recyclerView;
@@ -130,6 +147,16 @@ public class ExpenseFragment extends Fragment {
                 myViewHolder.setAmount(data.getAmount());
                 myViewHolder.setDate(data.getDate());
                 myViewHolder.setType(data.getType());
+
+                myViewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        post_key = getRef(i).getKey();
+                        type = data.getType();
+                        amount = data.getAmount();
+                        updateDateItem();
+                    }
+                });
             }
         };
 
@@ -157,5 +184,50 @@ public class ExpenseFragment extends Fragment {
             String a = String.valueOf(amt);
             mAmt.setText(a);
         }
+    }
+
+    public void updateDateItem(){
+        AlertDialog.Builder mydialog = new AlertDialog.Builder(getActivity());
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
+        View myview = inflater.inflate(R.layout.update_data_layout, null);
+        mydialog.setView(myview);
+
+        editAmount = myview.findViewById(R.id.amount_edt);
+        editType = myview.findViewById(R.id.type_edt);
+
+        editType.setText(type);
+        editType.setSelection(type.length());
+        editAmount.setText(String.valueOf(amount));
+        editAmount.setSelection(String.valueOf(amount).length());
+
+        btnUpdate = myview.findViewById(R.id.btnUpdate);
+        btnDelete = myview.findViewById(R.id.btnDelete);
+
+        AlertDialog dialog = mydialog.create();
+        btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mExpenseDatabase.child(post_key).removeValue();
+                dialog.dismiss();
+                Toast.makeText(myview.getContext(), "Data removed", Toast.LENGTH_SHORT).show();
+            }
+        });
+        btnUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                type = editType.getText().toString().trim();
+                amount = Integer.parseInt(editAmount.getText().toString().trim());
+                String date = DateFormat.getDateInstance().format(new Date());
+                Data data = new Data(amount, type, post_key, date);
+                mExpenseDatabase.child(post_key).setValue(data);
+
+                dialog.dismiss();
+                Toast.makeText(myview.getContext(), "Data updated", Toast.LENGTH_SHORT).show();
+            }
+
+        });
+
+        dialog.show();
+
     }
 }

@@ -3,6 +3,7 @@ package com.example.expensetracker;
 import android.app.AlertDialog;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.text.TextUtils;
@@ -20,8 +21,11 @@ import com.example.expensetracker.Model.Data;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -47,7 +51,8 @@ public class DashBoardFragment extends Fragment {
     private DatabaseReference mIncomeDatabase;
     private DatabaseReference mExpenseDatabase;
 
-
+    //Dashboard income and expense.
+    private TextView totalincomeresult, totalexpenseresult;
 
     private TextView fab_income_txt;
     private TextView fab_expense_txt;
@@ -110,6 +115,10 @@ public class DashBoardFragment extends Fragment {
         fab_income_txt = myview.findViewById(R.id.income_ft_text);
         fab_expense_txt = myview.findViewById(R.id.expense_ft_text);
 
+        //Connect total textview
+        totalincomeresult = myview.findViewById(R.id.income_set_result);
+        totalexpenseresult = myview.findViewById(R.id.expense_set_result);
+
         //Animation Connect.
         fadOpen = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_open);
         fadClose = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_close);
@@ -143,7 +152,44 @@ public class DashBoardFragment extends Fragment {
                 }
             }
         });
+        //calculate total amount.
+        mIncomeDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int total = 0;
+                for(DataSnapshot m: snapshot.getChildren()){
 
+                    Data data = m.getValue(Data.class);
+                    total+= data.getAmount();
+                    String temp = String.valueOf(total);
+                    totalincomeresult.setText(temp);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        mExpenseDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int total = 0;
+                for(DataSnapshot m: snapshot.getChildren()){
+
+                    Data data = m.getValue(Data.class);
+                    total+= data.getAmount();
+                    String temp = String.valueOf(total);
+                    totalexpenseresult.setText(temp);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
         return myview;
     }
     //Floating button animation
