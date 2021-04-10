@@ -21,6 +21,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.core.Repo;
 
 public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -114,6 +115,9 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
             case R.id.expense:
                 fragment = new ExpenseFragment();
+                break;
+            case R.id.analytics:
+                fragment = new AnalysisFragment();
                 break;
             case R.id.logout:
                 mAuth.signOut();

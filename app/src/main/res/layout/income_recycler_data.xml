@@ -42,7 +42,18 @@
                 android:id="@+id/type_txt_income"
                 android:textAppearance="?android:textAppearanceSmall"
                 android:textColor="@color/black"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:text="Description"
+                android:textStyle="bold"
+                android:id="@+id/desc_txt_income"
+                android:layout_below="@+id/type_txt_income"
+                android:textAppearance="?android:textAppearanceSmall"
+                android:textColor="@color/black"/>
         </RelativeLayout>
+
 
         <RelativeLayout
             android:layout_width="0dp"

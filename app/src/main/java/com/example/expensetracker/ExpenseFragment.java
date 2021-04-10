@@ -12,9 +12,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,7 +39,7 @@ import java.util.Date;
  * Use the {@link ExpenseFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ExpenseFragment extends Fragment {
+public class ExpenseFragment extends Fragment implements AdapterView.OnItemSelectedListener {
     //Firebase database
 
     private FirebaseAuth mAuth;
@@ -49,7 +52,9 @@ public class ExpenseFragment extends Fragment {
 
     //Data variable
     private String type;
+    private String description;
     private int amount;
+    private String spinnerType;
 
     private String post_key;
     //Recycler view.
@@ -147,13 +152,14 @@ public class ExpenseFragment extends Fragment {
                 myViewHolder.setAmount(data.getAmount());
                 myViewHolder.setDate(data.getDate());
                 myViewHolder.setType(data.getType());
-
+                myViewHolder.setDescription(data.getDescription());
                 myViewHolder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         post_key = getRef(i).getKey();
-                        type = data.getType();
+                        description = data.getDescription();
                         amount = data.getAmount();
+                        type =data.getType();
                         updateDateItem();
                     }
                 });
@@ -162,6 +168,9 @@ public class ExpenseFragment extends Fragment {
 
         recyclerView.setAdapter(adapter);
     }
+
+
+
     public static class MyViewHolder extends RecyclerView.ViewHolder{
 
         View mView;
@@ -184,6 +193,10 @@ public class ExpenseFragment extends Fragment {
             String a = String.valueOf(amt);
             mAmt.setText(a);
         }
+        private void setDescription(String description){
+            TextView mDesc = mView.findViewById(R.id.type_desc_expense);
+            mDesc.setText(description);
+        }
     }
 
     public void updateDateItem(){
@@ -194,15 +207,21 @@ public class ExpenseFragment extends Fragment {
 
         editAmount = myview.findViewById(R.id.amount_edt);
         editType = myview.findViewById(R.id.type_edt);
+        Spinner edtTypeSpinner = (Spinner) myview.findViewById(R.id.type_edt_spinner_update);
 
-        editType.setText(type);
-        editType.setSelection(type.length());
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(edtTypeSpinner.getContext(), R.array.TypesExpense,
+                android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        edtTypeSpinner.setAdapter(adapter);
+
+        editType.setText(description);
+        editType.setSelection(description.length());
         editAmount.setText(String.valueOf(amount));
         editAmount.setSelection(String.valueOf(amount).length());
 
         btnUpdate = myview.findViewById(R.id.btnUpdate);
         btnDelete = myview.findViewById(R.id.btnDelete);
-
+        edtTypeSpinner.setOnItemSelectedListener(this);
         AlertDialog dialog = mydialog.create();
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -215,10 +234,10 @@ public class ExpenseFragment extends Fragment {
         btnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                type = editType.getText().toString().trim();
+                description = editType.getText().toString().trim();
                 amount = Integer.parseInt(editAmount.getText().toString().trim());
                 String date = DateFormat.getDateInstance().format(new Date());
-                Data data = new Data(amount, type, post_key, date);
+                Data data = new Data(amount, spinnerType, post_key, date, description);
                 mExpenseDatabase.child(post_key).setValue(data);
 
                 dialog.dismiss();
@@ -228,6 +247,15 @@ public class ExpenseFragment extends Fragment {
         });
 
         dialog.show();
+
+    }
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        spinnerType = parent.getItemAtPosition(position).toString();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
 
     }
 }

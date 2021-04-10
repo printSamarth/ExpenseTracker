@@ -8,13 +8,15 @@ public class Data {
     private String type;
     private String id;
     private String date;
+    private String description;
     public Data(){
     }
-    public Data(int amount, String type, String id, String date){
+    public Data(int amount, String type, String id, String date, String description){
         this.amount = amount;
         this.type = type;
         this.id = id;
         this.date = date;
+        this.description = description;
     }
     public int getAmount() {
         return amount;
@@ -48,5 +50,11 @@ public class Data {
         this.date = date;
     }
 
+    public String getDescription() {
+        return description;
+    }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }

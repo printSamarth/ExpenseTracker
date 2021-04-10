@@ -12,8 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,7 +38,7 @@ import java.util.Date;
  * Use the {@link DashBoardFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DashBoardFragment extends Fragment {
+public class DashBoardFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -60,7 +63,7 @@ public class DashBoardFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     private boolean isOpen = false;
-
+    private String spinnerType;
     private Animation fadOpen, fadClose;
     public DashBoardFragment() {
         // Required empty public constructor
@@ -244,18 +247,24 @@ public class DashBoardFragment extends Fragment {
         AlertDialog dialog = mydialog.create();
         EditText edtAmount = myview.findViewById(R.id.amount_edt);
         EditText edtType = myview.findViewById(R.id.type_edt);
-
+        Spinner edtTypeSpinner = (Spinner) myview.findViewById(R.id.type_edt_spinner);
         Button btnSave = myview.findViewById(R.id.btnSave);
         Button btnCancel = myview.findViewById(R.id.btnCancel);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(edtTypeSpinner.getContext(), R.array.TypesIncome,
+                android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        edtTypeSpinner.setAdapter(adapter);
+        edtTypeSpinner.setOnItemSelectedListener(this);
+
 
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String type = edtType.getText().toString().trim();
+                String description = edtType.getText().toString().trim();
                 String amnt = edtAmount.getText().toString().trim();
 
-                if(TextUtils.isEmpty(type)){
-                    edtType.setError("Type required");
+                if(TextUtils.isEmpty(description)){
+                    edtType.setError("Description required");
                     return;
                 }
                 if(TextUtils.isEmpty(amnt)){
@@ -267,7 +276,7 @@ public class DashBoardFragment extends Fragment {
                 String id = mIncomeDatabase.push().getKey();
                 String mDate = DateFormat.getDateInstance().format(new Date());
 
-                Data data = new Data(intamount, type, id, mDate);
+                Data data = new Data(intamount, spinnerType, id, mDate, description);
                 mIncomeDatabase.child(id).setValue(data);
                 Toast.makeText(getActivity(), "Data added.", Toast.LENGTH_SHORT).show();
 
@@ -299,13 +308,21 @@ public class DashBoardFragment extends Fragment {
         Button btnSave = myview.findViewById(R.id.btnSave);
         Button btnCancel = myview.findViewById(R.id.btnCancel);
 
+        Spinner edtTypeSpinner = (Spinner) myview.findViewById(R.id.type_edt_spinner);
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(edtTypeSpinner.getContext(), R.array.TypesExpense,
+                android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        edtTypeSpinner.setAdapter(adapter);
+        edtTypeSpinner.setOnItemSelectedListener(this);
+
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String tmAmount = edtAmount.getText().toString().trim();
-                String tmType = edtType.getText().toString().trim();
-                if(TextUtils.isEmpty(tmType)){
-                    edtType.setError("Type required");
+                String tmDescription = edtType.getText().toString().trim();
+                if(TextUtils.isEmpty(tmDescription)){
+                    edtType.setError("Description required");
                     return;
                 }
                 if(TextUtils.isEmpty(tmAmount)){
@@ -316,7 +333,7 @@ public class DashBoardFragment extends Fragment {
 
                 String id = mExpenseDatabase.push().getKey();
                 String mDate = DateFormat.getDateInstance().format(new Date());
-                Data data = new Data(intamount, tmType, id, mDate);
+                Data data = new Data(intamount, spinnerType, id, mDate, tmDescription);
                 mExpenseDatabase.child(id).setValue(data);
                 Toast.makeText(getActivity(), "Data added.", Toast.LENGTH_SHORT).show();
 
@@ -334,6 +351,16 @@ public class DashBoardFragment extends Fragment {
             }
         });
         dialog.show();
+
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        spinnerType = parent.getItemAtPosition(position).toString();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
 
     }
 }
