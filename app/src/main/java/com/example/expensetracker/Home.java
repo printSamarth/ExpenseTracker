@@ -119,6 +119,9 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
             case R.id.analytics:
                 fragment = new AnalysisFragment();
                 break;
+            case R.id.stocks:
+                fragment = new Stocks();
+                break;
             case R.id.logout:
                 mAuth.signOut();
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));

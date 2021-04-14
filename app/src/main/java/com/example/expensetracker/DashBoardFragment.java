@@ -49,6 +49,7 @@ public class DashBoardFragment extends Fragment implements AdapterView.OnItemSel
     private FloatingActionButton fab_income_btn;
     private FloatingActionButton fab_expense_btn;
 
+
     // DataBase
     private FirebaseAuth mAuth;
     private DatabaseReference mIncomeDatabase;
@@ -59,6 +60,7 @@ public class DashBoardFragment extends Fragment implements AdapterView.OnItemSel
 
     private TextView fab_income_txt;
     private TextView fab_expense_txt;
+    private TextView fab_stock_txt;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -112,6 +114,7 @@ public class DashBoardFragment extends Fragment implements AdapterView.OnItemSel
         fab_main_btn = myview.findViewById(R.id.fb_main_plus_btn);
         fab_income_btn = myview.findViewById(R.id.income_Ft_button);
         fab_expense_btn = myview.findViewById(R.id.expense_Ft_button);
+        
 
         //Connect text
 

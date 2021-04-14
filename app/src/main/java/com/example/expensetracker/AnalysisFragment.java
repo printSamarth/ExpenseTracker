@@ -1,5 +1,6 @@
 package com.example.expensetracker;
 //MPAndroid chart for piechart.
+import android.app.DatePickerDialog;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 
 import com.example.expensetracker.Model.Data;
 import com.github.mikephil.charting.charts.PieChart;
@@ -22,6 +24,7 @@ import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -31,6 +34,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Hashtable;
 
 /**
@@ -39,7 +43,7 @@ import java.util.Hashtable;
  * create an instance of this fragment.
  */
 public class AnalysisFragment extends Fragment {
-
+    String[] date = {"Apr 10", "Apr 12"};
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -104,16 +108,41 @@ public class AnalysisFragment extends Fragment {
        mExpenseDatabase = FirebaseDatabase.getInstance().getReference().child("ExpenseData").child(uid);
 
        btnDate = myView.findViewById(R.id.btnDate);
+
        MaterialDatePicker.Builder<Pair<Long, Long>> builder = MaterialDatePicker.Builder.dateRangePicker();
        builder.setTitleText("Select range");
+       builder.setTheme(R.style.ThemeOverlay_MaterialComponents_MaterialCalendar);
        final MaterialDatePicker materialDatePicker = builder.build();
 
-       btnDate.setOnClickListener(new View.OnClickListener() {
+        btnDate.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
+               materialDatePicker.show(getFragmentManager(), "MATERIAL_DATE_PICKER");
 
            }
        });
+
+
+
+        materialDatePicker.addOnPositiveButtonClickListener(
+                new MaterialPickerOnPositiveButtonClickListener() {
+
+                    @Override
+                    public void onPositiveButtonClick(Object selection) {
+
+                        // if the user clicks on the positive
+                        // button that is ok button update the
+                        // selected date
+                        //mShowSelectedDateText.setText("Selected Date is : " + materialDatePicker.getHeaderText());
+                        System.out.println("Selected Date is : " + materialDatePicker.getHeaderText());
+                        date = materialDatePicker.getHeaderText().split("-");
+                        System.out.println(materialDatePicker.toString());
+                        // in the above statement, getHeaderText
+                        // will return selected date preview from the
+                        // dialog
+                    }
+                });
+
 
 
        mExpenseDatabase.addValueEventListener(new ValueEventListener() {
@@ -125,6 +154,7 @@ public class AnalysisFragment extends Fragment {
                    String type = data.getType();
                    total+= data.getAmount();
                    System.out.println("In"+data.getAmount());
+                   System.out.println("In "+data.getDate());
                    System.out.println("Total:"+total);
                    //int count = categorySum.containsKey(type) ? categorySum.get(type) : 0;
                    int tempSum = categorySum.get(type);

@@ -12,6 +12,9 @@
     <item android:id="@+id/analytics"
         android:title="Analysis"
         android:icon="@drawable/analytics"/>
+    <item android:id="@+id/stocks"
+        android:title="Stocks"
+        android:icon="@drawable/stocks"/>
     <item android:id="@+id/logout"
         android:title="Logout"
         android:icon="@drawable/logout"/>
