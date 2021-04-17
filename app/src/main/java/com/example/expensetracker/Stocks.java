@@ -144,10 +144,11 @@ public class Stocks extends Fragment {
                         System.out.println("Hello from onResponse");
 
                         try {
-                            System.out.println(response.toString());
+                            System.out.println(response.toString() + " Units "+ unit);
                             amountDouble = response.getDouble(cd);
+                            amountDouble = amountDouble * unit;
                             System.out.println(amountDouble);
-                            amountDouble*= unit;
+
                             StockData data = new StockData(unit, cd, date,amountDouble);
                             System.out.println("From object "+data.getAmount());
                             String id = stocksDb.push().getKey();
@@ -192,17 +193,42 @@ public class Stocks extends Fragment {
                 myViewHolder.setCode(stockData.getCode());
                 myViewHolder.setUnits(stockData.getUnits());
                 myViewHolder.setDate(stockData.getDate());
-                myViewHolder.setAmount(stockData.getAmount());
+                myViewHolder.setAmount(stockData.getCode(), stockData.getUnits());
                 myViewHolder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         post_key = getRef(i).getKey();
                         code_stock = stockData.getCode();
-                        amountDouble = stockData.getAmount();
+                        RequestQueue queue = Volley.newRequestQueue(getContext());
+
+                        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,url+code_stock,
+                                null, new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                System.out.println("Hello from onResponse");
+                                System.out.println(response.toString());
+                                try {
+                                    amountDouble = response.getDouble(code_stock);
+                                }
+                                catch (Exception e){
+                                    System.out.println(e);
+                                }
+
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                System.out.println("Hello from onError");
+                                System.out.println(error.toString());
+                            }
+                        });
+
+                        queue.add(jsonObjectRequest);
+
 
                         System.out.println("Hello from onClick");
                         unit = stockData.getUnits();
-                        amountDouble*= unit;
+                        amountDouble = amountDouble * unit;
                         updateDateItem();
                     }
                 });
@@ -216,10 +242,40 @@ public class Stocks extends Fragment {
             super(itemView);
             mView = itemView;
         }
-        private void setAmount(double amount){
+        private void setAmount(String code, int units){
             TextView mAmount = mView.findViewById(R.id.amount_txt_stocks);
-            String a = String.valueOf(amount);
-            mAmount.setText(a);
+            //String a = String.valueOf(amount);
+            RequestQueue queue = Volley.newRequestQueue(mView.getContext());
+            String url = "http://10.0.2.2:5000/api/";
+
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,url+code,
+                    null, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    System.out.println("Hello from onResponse");
+
+                    try {
+                        double amountDouble = response.getDouble(code);
+                        amountDouble = amountDouble * units;
+                        System.out.println(amountDouble);
+                        mAmount.setText(String.valueOf(amountDouble));
+                    }
+                    catch (Exception e){
+                        System.out.println(e);
+                    }
+
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    System.out.println("Hello from onError");
+                    System.out.println(error.toString());
+                }
+            });
+
+            queue.add(jsonObjectRequest);
+
+
         }
         private void setUnits(int units){
             TextView mType = mView.findViewById(R.id.units_txt_stocks);

@@ -34,7 +34,7 @@ def price(code):
 
 if __name__ == '__main__':
     try:
-        app.run( port=5000, debug=True)
+        app.run( port=5000, debug=True, threaded=True)
     except:
         print("Server is exited unexpectedly. Please contact server admin.")
 
