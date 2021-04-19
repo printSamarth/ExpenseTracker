@@ -59,6 +59,7 @@ public class IncomeFragment extends Fragment implements AdapterView.OnItemSelect
     private String spinnerType;
     private int amount;
     private String post_key;
+    private String mediumType;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -216,6 +217,13 @@ public class IncomeFragment extends Fragment implements AdapterView.OnItemSelect
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         edtTypeSpinner.setAdapter(adapter);
 
+        Spinner mediumSpinner = myView.findViewById(R.id.medium_edt_spinner_update);
+
+        ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(mediumSpinner.getContext(),
+                R.array.medium, android.R.layout.simple_spinner_item);
+        adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mediumSpinner.setAdapter(adapter1);
+        mediumSpinner.setOnItemSelectedListener(this);
 
         edtAmount = myView.findViewById(R.id.amount_edt);
         edtDescription = myView.findViewById(R.id.type_edt);
@@ -238,7 +246,7 @@ public class IncomeFragment extends Fragment implements AdapterView.OnItemSelect
                 String amount_string = edtAmount.getText().toString().trim();
                 amount  = Integer.parseInt(amount_string);
                 String mDate = DateFormat.getDateInstance().format(new Date());
-                Data data = new Data(amount, spinnerType, post_key,mDate, description);
+                Data data = new Data(amount, spinnerType, post_key,mDate, description, mediumType);
                 mIncomeDatabase.child(post_key).setValue(data);
                 dialog.dismiss();
                 Toast.makeText(myView.getContext(), "Data updated", Toast.LENGTH_SHORT).show();
@@ -259,7 +267,17 @@ public class IncomeFragment extends Fragment implements AdapterView.OnItemSelect
     }
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            spinnerType = parent.getItemAtPosition(position).toString();
+        Spinner spinner1 = (Spinner) parent;
+        Spinner spinner2 = (Spinner) parent;
+        if(spinner1.getId() == R.id.type_edt_spinner) {
+            spinnerType = spinner1.getItemAtPosition(position).toString();
+        }
+        else{
+            mediumType = spinner2.getItemAtPosition(position).toString();
+        }
+        System.out.println("From on ItemSelected spinner Type" + spinnerType);
+        System.out.println("From on ItemSelected medium Type" + mediumType);
+
     }
 
     @Override

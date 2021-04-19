@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.expensetracker.Model.Data;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -49,11 +50,15 @@ public class DashBoardFragment extends Fragment implements AdapterView.OnItemSel
     private FloatingActionButton fab_income_btn;
     private FloatingActionButton fab_expense_btn;
 
+    private TextView netBankText, netCashText;
 
     // DataBase
     private FirebaseAuth mAuth;
     private DatabaseReference mIncomeDatabase;
     private DatabaseReference mExpenseDatabase;
+    private DatabaseReference mBalance;
+
+    private double netBank=0, netCash=0;
 
     //Dashboard income and expense.
     private TextView totalincomeresult, totalexpenseresult;
@@ -65,7 +70,7 @@ public class DashBoardFragment extends Fragment implements AdapterView.OnItemSel
     private String mParam1;
     private String mParam2;
     private boolean isOpen = false;
-    private String spinnerType;
+    private String spinnerType, mediumType;
     private Animation fadOpen, fadClose;
     public DashBoardFragment() {
         // Required empty public constructor
@@ -110,6 +115,8 @@ public class DashBoardFragment extends Fragment implements AdapterView.OnItemSel
 
         mIncomeDatabase = FirebaseDatabase.getInstance().getReference().child("IncomeData").child(uid);
         mExpenseDatabase = FirebaseDatabase.getInstance().getReference().child("ExpenseData").child(uid);
+        mBalance = FirebaseDatabase.getInstance().getReference().child("Balance").child(uid);
+
         //Connect floating button to layout
         fab_main_btn = myview.findViewById(R.id.fb_main_plus_btn);
         fab_income_btn = myview.findViewById(R.id.income_Ft_button);
@@ -124,6 +131,8 @@ public class DashBoardFragment extends Fragment implements AdapterView.OnItemSel
         //Connect total textview
         totalincomeresult = myview.findViewById(R.id.income_set_result);
         totalexpenseresult = myview.findViewById(R.id.expense_set_result);
+        netBankText = myview.findViewById(R.id.bank_set_result);
+        netCashText = myview.findViewById(R.id.cash_set_result);
 
         //Animation Connect.
         fadOpen = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_open);
@@ -163,13 +172,26 @@ public class DashBoardFragment extends Fragment implements AdapterView.OnItemSel
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 int total = 0;
+                String tempCash = netCashText.getText().toString();
+                double cash  = Double.parseDouble(tempCash);
+                String tempBank = netBankText.getText().toString();
+                double bank = Double.parseDouble(tempBank);
+                netBank = 0;
                 for(DataSnapshot m: snapshot.getChildren()){
 
                     Data data = m.getValue(Data.class);
                     total+= data.getAmount();
+                    if(data.getMedium().equals("Bank")) {
+                        bank+= data.getAmount();
+                    }
+                    else{
+                        cash+=data.getAmount();
+                    }
                     String temp = String.valueOf(total);
                     totalincomeresult.setText(temp);
                 }
+                netBankText.setText(String.valueOf(bank));
+                netCashText.setText(String.valueOf(cash));
             }
 
             @Override
@@ -182,13 +204,27 @@ public class DashBoardFragment extends Fragment implements AdapterView.OnItemSel
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 int total = 0;
+                netCash = 0;
+                netBank = 0;
+                String tempCash = netCashText.getText().toString();
+                double cash  = Double.parseDouble(tempCash);
+                String tempBank = netBankText.getText().toString();
+                double bank = Double.parseDouble(tempBank);
                 for(DataSnapshot m: snapshot.getChildren()){
 
                     Data data = m.getValue(Data.class);
                     total+= data.getAmount();
+                    if(data.getMedium().equals("Bank")) {
+                        bank-= data.getAmount();
+                    }
+                    else{
+                        cash-=data.getAmount();
+                    }
                     String temp = String.valueOf(total);
                     totalexpenseresult.setText(temp);
                 }
+                netBankText.setText(String.valueOf(bank));
+                netCashText.setText(String.valueOf(cash));
             }
 
             @Override
@@ -259,6 +295,13 @@ public class DashBoardFragment extends Fragment implements AdapterView.OnItemSel
         edtTypeSpinner.setAdapter(adapter);
         edtTypeSpinner.setOnItemSelectedListener(this);
 
+        Spinner mediumSpinner = myview.findViewById(R.id.medium_edt_spinner);
+
+        ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(mediumSpinner.getContext(),
+                R.array.medium, android.R.layout.simple_spinner_item);
+        adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mediumSpinner.setAdapter(adapter1);
+        mediumSpinner.setOnItemSelectedListener(this);
 
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -279,7 +322,7 @@ public class DashBoardFragment extends Fragment implements AdapterView.OnItemSel
                 String id = mIncomeDatabase.push().getKey();
                 String mDate = DateFormat.getDateInstance().format(new Date());
 
-                Data data = new Data(intamount, spinnerType, id, mDate, description);
+                Data data = new Data(intamount, spinnerType, id, mDate, description, mediumType);
                 mIncomeDatabase.child(id).setValue(data);
                 Toast.makeText(getActivity(), "Data added.", Toast.LENGTH_SHORT).show();
 
@@ -319,6 +362,14 @@ public class DashBoardFragment extends Fragment implements AdapterView.OnItemSel
         edtTypeSpinner.setAdapter(adapter);
         edtTypeSpinner.setOnItemSelectedListener(this);
 
+        Spinner mediumSpinner = myview.findViewById(R.id.medium_edt_spinner);
+
+        ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(mediumSpinner.getContext(),
+                R.array.medium, android.R.layout.simple_spinner_item);
+        adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mediumSpinner.setAdapter(adapter1);
+        mediumSpinner.setOnItemSelectedListener(this);
+
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -336,7 +387,10 @@ public class DashBoardFragment extends Fragment implements AdapterView.OnItemSel
 
                 String id = mExpenseDatabase.push().getKey();
                 String mDate = DateFormat.getDateInstance().format(new Date());
-                Data data = new Data(intamount, spinnerType, id, mDate, tmDescription);
+
+
+                System.out.println("Frooooommmmmm "+mediumType);
+                Data data = new Data(intamount, spinnerType, id, mDate, tmDescription, mediumType);
                 mExpenseDatabase.child(id).setValue(data);
                 Toast.makeText(getActivity(), "Data added.", Toast.LENGTH_SHORT).show();
 
@@ -359,7 +413,16 @@ public class DashBoardFragment extends Fragment implements AdapterView.OnItemSel
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        spinnerType = parent.getItemAtPosition(position).toString();
+        Spinner spinner1 = (Spinner) parent;
+        Spinner spinner2 = (Spinner) parent;
+        if(spinner1.getId() == R.id.type_edt_spinner) {
+            spinnerType = spinner1.getItemAtPosition(position).toString();
+        }
+        else{
+            mediumType = spinner2.getItemAtPosition(position).toString();
+        }
+        System.out.println("From on ItemSelected spinner Type" + spinnerType);
+        System.out.println("From on ItemSelected medium Type" + mediumType);
     }
 
     @Override

@@ -28,8 +28,11 @@ import com.example.expensetracker.Model.StockData;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONObject;
 
@@ -55,6 +58,8 @@ public class Stocks extends Fragment {
     private RecyclerView recyclerView;
     private DatabaseReference stocksDb;
 
+    private TextView stockResult;
+    private static double totalStocks;
     private TextView editUnits, editCode;
     private Button btnUpdate, btnDelete;
     private double amountDouble;
@@ -110,6 +115,7 @@ public class Stocks extends Fragment {
         FirebaseUser mUser = mAuth.getCurrentUser();
         String uid = mUser.getUid();
 
+
         stocksDb = FirebaseDatabase.getInstance().getReference().child("StocksData").child(uid);
         recyclerView = myView.findViewById(R.id.recycler_id_stocks);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -118,6 +124,24 @@ public class Stocks extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
 
+//        stocksDb.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                double totalStock = 0;
+//                for(DataSnapshot ds: snapshot.getChildren()){
+//
+//                    StockData data = ds.getValue(StockData.class);
+//                    totalStock+= (data.getAmount()*data.getUnits());
+//                    System.out.println("Total "+totalStock);
+//                    stockResult.setText(String.valueOf(totalStock));
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -194,6 +218,7 @@ public class Stocks extends Fragment {
                 myViewHolder.setUnits(stockData.getUnits());
                 myViewHolder.setDate(stockData.getDate());
                 myViewHolder.setAmount(stockData.getCode(), stockData.getUnits());
+
                 myViewHolder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -242,11 +267,15 @@ public class Stocks extends Fragment {
             super(itemView);
             mView = itemView;
         }
+
+
         private void setAmount(String code, int units){
             TextView mAmount = mView.findViewById(R.id.amount_txt_stocks);
+            //TextView total = mView.findViewById(R.id.abcd);
             //String a = String.valueOf(amount);
             RequestQueue queue = Volley.newRequestQueue(mView.getContext());
             String url = "http://10.0.2.2:5000/api/";
+
 
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,url+code,
                     null, new Response.Listener<JSONObject>() {
@@ -258,6 +287,9 @@ public class Stocks extends Fragment {
                         double amountDouble = response.getDouble(code);
                         amountDouble = amountDouble * units;
                         System.out.println(amountDouble);
+                        totalStocks+= amountDouble;
+                        System.out.println("Total" + totalStocks);
+                        //total.setText("Abcd");
                         mAmount.setText(String.valueOf(amountDouble));
                     }
                     catch (Exception e){

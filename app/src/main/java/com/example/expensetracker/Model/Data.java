@@ -9,15 +9,26 @@ public class Data {
     private String id;
     private String date;
     private String description;
+    private String medium;
     public Data(){
     }
-    public Data(int amount, String type, String id, String date, String description){
+    public Data(int amount, String type, String id, String date, String description, String medium){
         this.amount = amount;
         this.type = type;
         this.id = id;
         this.date = date;
         this.description = description;
+        this.medium = medium;
     }
+
+    public String getMedium() {
+        return medium;
+    }
+
+    public void setMedium(String medium) {
+        this.medium = medium;
+    }
+
     public int getAmount() {
         return amount;
     }

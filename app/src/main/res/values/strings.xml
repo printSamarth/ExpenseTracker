@@ -12,10 +12,18 @@
         <item>Grocery</item>
         <item>Medical</item>
         <item>Electricity</item>
+        <item>Electronics equipments</item>
+    </string-array>
+
+    <string-array name="medium">
+        <item>Cash</item>
+        <item>Bank</item>
     </string-array>
 
     <string-array name="TypesIncome">
         <item>Salary</item>
         <item>Interest</item>
+        <item>Withdraw</item>
+        <item>Received</item>
     </string-array>
 </resources>

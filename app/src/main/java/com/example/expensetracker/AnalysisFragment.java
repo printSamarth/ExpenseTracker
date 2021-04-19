@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ImageButton;
 
 import com.example.expensetracker.Model.Data;
 import com.github.mikephil.charting.charts.PieChart;
@@ -57,8 +58,8 @@ public class AnalysisFragment extends Fragment {
     private PieChart pieChart;
     private DatabaseReference mExpenseDatabase;
     private FirebaseAuth mAuth;
-    private Button btnDate;
-    private Hashtable<String, Integer> categorySum;
+    private ImageButton btnDate;
+    private Hashtable<String, Double> categorySum;
     public AnalysisFragment() {
         // Required empty public constructor
     }
@@ -95,10 +96,12 @@ public class AnalysisFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
        View myView = inflater.inflate(R.layout.fragment_analysis, container, false);
-       categorySum = new Hashtable<String, Integer>();
-       String[] categories = {"Clothes", "Food & Dining", "Transport", "Entertainment", "Grocery", "Medical", "Electricity"};
+       categorySum = new Hashtable<String, Double>();
+       String[] categories = {"Clothes", "Food & Dining", "Transport", "Entertainment", "Grocery",
+               "Medical", "Electricity", "Electronics equipments"};
        for(String category : categories){
-           categorySum.put(category, 0);
+           double temp = 0;
+           categorySum.put(category, temp);
        }
        pieChart = myView.findViewById(R.id.pie_chart);
        mAuth = FirebaseAuth.getInstance();
@@ -157,7 +160,7 @@ public class AnalysisFragment extends Fragment {
                    System.out.println("In "+data.getDate());
                    System.out.println("Total:"+total);
                    //int count = categorySum.containsKey(type) ? categorySum.get(type) : 0;
-                   int tempSum = categorySum.get(type);
+                   double tempSum = categorySum.get(type);
                    categorySum.put(type, data.getAmount() + tempSum);
                    System.out.println(categorySum);
                }
@@ -197,10 +200,10 @@ public class AnalysisFragment extends Fragment {
         //System.out.println("From Load Data: "+total);
         ArrayList<PieEntry> entries = new ArrayList<>();
         String maxSpending = "";
-        int max = 0;
+        double max = 0;
         for(String key: categorySum.keySet()){
             double percentage;
-            int temp = categorySum.get(key);
+            double temp = categorySum.get(key);
             if(temp == 0){
                 continue;
             }
