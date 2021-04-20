@@ -35,11 +35,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.DateFormat;
 import java.util.Date;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link DashBoardFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class DashBoardFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
     // TODO: Rename parameter arguments, choose names that match
