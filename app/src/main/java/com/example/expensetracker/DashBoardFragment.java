@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,6 +53,7 @@ public class DashBoardFragment extends Fragment implements AdapterView.OnItemSel
 
     private TextView netBankText, netCashText;
 
+    private int position;
     // DataBase
     private FirebaseAuth mAuth;
     private DatabaseReference mIncomeDatabase;
@@ -59,7 +61,8 @@ public class DashBoardFragment extends Fragment implements AdapterView.OnItemSel
     private DatabaseReference mBalance;
 
     private double netBank=0, netCash=0;
-
+    private static double globalBank, globalCash;
+    private double incomeCash, incomeBank, expenseBank, expenseCash;
     //Dashboard income and expense.
     private TextView totalincomeresult, totalexpenseresult;
 
@@ -134,6 +137,16 @@ public class DashBoardFragment extends Fragment implements AdapterView.OnItemSel
         netBankText = myview.findViewById(R.id.bank_set_result);
         netCashText = myview.findViewById(R.id.cash_set_result);
 
+        //Global balance
+//        String tempCash = netCashText.getText().toString();
+//        double cash  = Double.parseDouble(tempCash);
+//        globalCash = cash;
+//
+//        String tempBank = netBankText.getText().toString();
+//        double bank = Double.parseDouble(tempBank);
+//        globalBank = bank;
+
+
         //Animation Connect.
         fadOpen = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_open);
         fadClose = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_close);
@@ -171,27 +184,33 @@ public class DashBoardFragment extends Fragment implements AdapterView.OnItemSel
         mIncomeDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                int total = 0;
-                String tempCash = netCashText.getText().toString();
-                double cash  = Double.parseDouble(tempCash);
-                String tempBank = netBankText.getText().toString();
-                double bank = Double.parseDouble(tempBank);
-                netBank = 0;
+                double total = 0;
+                incomeCash = 0;
+                incomeBank = 0;
                 for(DataSnapshot m: snapshot.getChildren()){
 
                     Data data = m.getValue(Data.class);
                     total+= data.getAmount();
                     if(data.getMedium().equals("Bank")) {
-                        bank+= data.getAmount();
+                        //globalBank+= data.getAmount();
+                        incomeBank+= data.getAmount();
                     }
                     else{
-                        cash+=data.getAmount();
+                        //globalCash+=data.getAmount();
+                        incomeCash+= data.getAmount();
                     }
                     String temp = String.valueOf(total);
                     totalincomeresult.setText(temp);
                 }
-                netBankText.setText(String.valueOf(bank));
-                netCashText.setText(String.valueOf(cash));
+                globalBank = incomeBank - expenseBank;
+                globalCash = incomeCash - expenseCash;
+                Log.d("DashBoard", "mIncome "+position++);
+                Log.d("Dashboard", "Bank "+globalBank);
+                Log.d("Dashboard", "Cash "+globalCash);
+
+                netBankText.setText(String.valueOf(globalBank));
+                netCashText.setText(String.valueOf(globalCash));
+
             }
 
             @Override
@@ -203,28 +222,32 @@ public class DashBoardFragment extends Fragment implements AdapterView.OnItemSel
         mExpenseDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                int total = 0;
-                netCash = 0;
-                netBank = 0;
-                String tempCash = netCashText.getText().toString();
-                double cash  = Double.parseDouble(tempCash);
-                String tempBank = netBankText.getText().toString();
-                double bank = Double.parseDouble(tempBank);
+                double total = 0;
+                expenseBank = 0;
+                expenseCash = 0;
                 for(DataSnapshot m: snapshot.getChildren()){
 
                     Data data = m.getValue(Data.class);
                     total+= data.getAmount();
                     if(data.getMedium().equals("Bank")) {
-                        bank-= data.getAmount();
+                        //globalBank-= data.getAmount();
+                        expenseBank+= data.getAmount();
                     }
                     else{
-                        cash-=data.getAmount();
+                        //globalCash-=data.getAmount();
+                        expenseCash+= data.getAmount();
                     }
                     String temp = String.valueOf(total);
                     totalexpenseresult.setText(temp);
                 }
-                netBankText.setText(String.valueOf(bank));
-                netCashText.setText(String.valueOf(cash));
+
+                globalBank = incomeBank - expenseBank;
+                globalCash = incomeCash - expenseCash;
+                Log.d("DashBoard", "mExpense "+position++);
+                Log.d("Dashboard", "Bank "+globalBank);
+                Log.d("Dashboard", "Cash "+globalCash);
+                netBankText.setText(String.valueOf(globalBank));
+                netCashText.setText(String.valueOf(globalCash));
             }
 
             @Override
