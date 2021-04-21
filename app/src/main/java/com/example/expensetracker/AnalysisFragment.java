@@ -34,8 +34,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Hashtable;
 
 /**
@@ -44,7 +47,13 @@ import java.util.Hashtable;
  * create an instance of this fragment.
  */
 public class AnalysisFragment extends Fragment {
-    String[] date = {"Apr 10", "Apr 12"};
+    String type;// = {"Apr 10", "Apr 12"};
+    Date startDate, endDate,tempDate;
+    SimpleDateFormat simpleFormat = new SimpleDateFormat("MMM dd, yyyy");
+    Data data;
+    DataSnapshot snapshottemp;
+    String[] categories = {"Clothes", "Food & Dining", "Transport", "Entertainment", "Grocery",
+            "Medical", "Electricity", "Electronics equipments"};
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -97,8 +106,7 @@ public class AnalysisFragment extends Fragment {
         // Inflate the layout for this fragment
        View myView = inflater.inflate(R.layout.fragment_analysis, container, false);
        categorySum = new Hashtable<String, Double>();
-       String[] categories = {"Clothes", "Food & Dining", "Transport", "Entertainment", "Grocery",
-               "Medical", "Electricity", "Electronics equipments"};
+
        for(String category : categories){
            double temp = 0;
            categorySum.put(category, temp);
@@ -132,18 +140,63 @@ public class AnalysisFragment extends Fragment {
 
                     @Override
                     public void onPositiveButtonClick(Object selection) {
+                        Pair selectedDates = (Pair) materialDatePicker.getSelection();
+//              then obtain the startDate & endDate from the range
+                        final Pair<Date, Date> rangeDate = new Pair<>(new Date((Long) selectedDates.first), new Date((Long) selectedDates.second));
+//              assigned variables
+                        startDate = rangeDate.first;
+                        endDate = rangeDate.second;
+//              Format the dates in ur desired display mode
+
+//              Display it by setText
+                       System.out.println("SELECTED DATE : " +  simpleFormat.format(startDate) + " Second : " + simpleFormat.format(endDate));
+                       //String str_startDate = simpleFormat.format(startDate);
+
 
                         // if the user clicks on the positive
                         // button that is ok button update the
                         // selected date
                         //mShowSelectedDateText.setText("Selected Date is : " + materialDatePicker.getHeaderText());
-                        System.out.println("Selected Date is : " + materialDatePicker.getHeaderText());
-                        date = materialDatePicker.getHeaderText().split("-");
-                        System.out.println(materialDatePicker.toString());
+                        //System.out.println("Selected Date is : " + materialDatePicker.getHeaderText());
+                        //date = materialDatePicker.getHeaderText().split("-");
+                        //System.out.println(materialDatePicker.toString());
                         // in the above statement, getHeaderText
                         // will return selected date preview from the
                         // dialog
+                        total =0;
+                        //categorySum.clear();
+                        for(String category : categories){
+                            double temp = 0;
+                            categorySum.put(category, temp);
+                        }
+                        for(DataSnapshot ds: snapshottemp.getChildren()) {
+                            data = ds.getValue(Data.class);
+                            type = data.getType();
+                            try {
+                                tempDate = simpleFormat.parse(data.getDate());
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            if((tempDate.equals(startDate) || tempDate.after(startDate))
+                                    && (tempDate.equals(endDate) || tempDate.before(endDate)))
+                            {
+                                total+= data.getAmount();
+                                System.out.println("Total = " + total);
+                                double tempSum = categorySum.get(type);
+                                System.out.println("Tempsum = " + tempSum);
+                                categorySum.put(type, data.getAmount() + tempSum);
+                                System.out.println("In"+data.getAmount());
+                                System.out.println("In "+ simpleFormat.format(tempDate));
+                                System.out.println("Total:"+total);
+                                //int count = categorySum.containsKey(type) ? categorySum.get(type) : 0;
+
+                                System.out.println(categorySum);
+                            }
+                            else {}
+                        }
+                        loadData();
                     }
+
                 });
 
 
@@ -151,18 +204,26 @@ public class AnalysisFragment extends Fragment {
        mExpenseDatabase.addValueEventListener(new ValueEventListener() {
            @Override
            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
+                snapshottemp = snapshot;
                for(DataSnapshot ds: snapshot.getChildren()){
-                   Data data = ds.getValue(Data.class);
-                   String type = data.getType();
+                   data = ds.getValue(Data.class);
+                   type = data.getType();
+                   try {
+                       tempDate = simpleFormat.parse(data.getDate());
+                   } catch (ParseException e) {
+                       e.printStackTrace();
+                   }
+
                    total+= data.getAmount();
-                   System.out.println("In"+data.getAmount());
-                   System.out.println("In "+data.getDate());
-                   System.out.println("Total:"+total);
-                   //int count = categorySum.containsKey(type) ? categorySum.get(type) : 0;
                    double tempSum = categorySum.get(type);
                    categorySum.put(type, data.getAmount() + tempSum);
+                   System.out.println("In"+data.getAmount());
+                   System.out.println("In "+ simpleFormat.format(tempDate));
+                   System.out.println("Total:"+total);
+                   //int count = categorySum.containsKey(type) ? categorySum.get(type) : 0;
+
                    System.out.println(categorySum);
+
                }
                loadData();
            }
