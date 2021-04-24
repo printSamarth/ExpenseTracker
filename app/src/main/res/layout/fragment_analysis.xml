@@ -1,62 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".AnalysisFragment">
+    tools:context=".AnalysisFragment"
+    tools:visibility="visible">
+
     <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
-        app:cardElevation="5dp"
+        android:layout_height="wrap_content"
         android:elevation="10dp"
-        android:layout_height="wrap_content">
+        app:cardElevation="5dp">
+
         <ImageButton
+            android:id="@+id/btnDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:id="@+id/btnDate"
-            android:src="@drawable/filter"/>
+            android:src="@drawable/filter" />
     </androidx.cardview.widget.CardView>
 
-<!--    <androidx.cardview.widget.CardView-->
-<!--        android:layout_width="match_parent"-->
-<!--        app:cardElevation="5dp"-->
-<!--        android:elevation="10dp"-->
-<!--        android:layout_marginRight="10dp"-->
-<!--        android:layout_marginLeft="10dp"-->
-<!--        android:layout_marginTop="10dp"-->
+    <!--    <androidx.cardview.widget.CardView-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        app:cardElevation="5dp"-->
+    <!--        android:elevation="10dp"-->
+    <!--        android:layout_marginRight="10dp"-->
+    <!--        android:layout_marginLeft="10dp"-->
+    <!--        android:layout_marginTop="10dp"-->
 
-<!--        android:layout_height="wrap_content">-->
-<!--        <LinearLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:orientation="vertical">-->
-<!--        <TextView-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
+    <!--        android:layout_height="wrap_content">-->
+    <!--        <LinearLayout-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:orientation="vertical">-->
+    <!--        <TextView-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="wrap_content"-->
 
-<!--            android:gravity="center"-->
-<!--            android:textColor="@color/black"-->
-<!--            android:id="@+id/section"-->
-<!--            android:text="Analysis section"-->
-<!--            android:textAppearance="?android:textAppearanceLarge"/>-->
-<!--            -->
-<!--&lt;!&ndash;        <Button&ndash;&gt;-->
-<!--&lt;!&ndash;            android:layout_height="wrap_content"&ndash;&gt;-->
-<!--&lt;!&ndash;            android:layout_width="wrap_content"&ndash;&gt;-->
-<!--&lt;!&ndash;            style="@style/Widget.MaterialComponents.Icon"&ndash;&gt;-->
+    <!--            android:gravity="center"-->
+    <!--            android:textColor="@color/black"-->
+    <!--            android:id="@+id/section"-->
+    <!--            android:text="Analysis section"-->
+    <!--            android:textAppearance="?android:textAppearanceLarge"/>-->
+    <!--            -->
+    <!--&lt;!&ndash;        <Button&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:layout_height="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:layout_width="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;            style="@style/Widget.MaterialComponents.Icon"&ndash;&gt;-->
 
-<!--&lt;!&ndash;            android:id="@+id/btnDate"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:id="@+id/btnDate"&ndash;&gt;-->
 
-<!--&lt;!&ndash;            android:backgroundTint="@color/teal_700"/>&ndash;&gt;-->
-<!--        </LinearLayout>-->
-<!--    </androidx.cardview.widget.CardView>-->
+    <!--&lt;!&ndash;            android:backgroundTint="@color/teal_700"/>&ndash;&gt;-->
+    <!--        </LinearLayout>-->
+    <!--    </androidx.cardview.widget.CardView>-->
 
     <com.github.mikephil.charting.charts.PieChart
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-
         android:id="@+id/pie_chart"
-        />
+        android:layout_width="match_parent"
+
+        android:layout_height="504dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="122dp"
+        android:layout_marginBottom="105dp">
+
+
+    </com.github.mikephil.charting.charts.PieChart>
+
+    <TextView
+        android:id="@+id/comparision"
+        android:layout_width="390dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="670dp"
+        android:layout_marginEnd="11dp"
+        android:layout_marginRight="11dp"
+        android:layout_marginBottom="73dp"
+        android:gravity="center_horizontal"
+        android:text="comparision will be shown here"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textStyle="bold" />
 
 </RelativeLayout>

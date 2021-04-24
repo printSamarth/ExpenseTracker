@@ -2,9 +2,11 @@ package com.example.expensetracker;
 //MPAndroid chart for piechart.
 import android.app.DatePickerDialog;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 
@@ -15,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.example.expensetracker.Model.Data;
 import com.github.mikephil.charting.charts.PieChart;
@@ -39,7 +42,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.time.temporal.ChronoUnit;
 import java.util.Hashtable;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -48,9 +53,11 @@ import java.util.Hashtable;
  */
 public class AnalysisFragment extends Fragment {
     String type;// = {"Apr 10", "Apr 12"};
-    Date startDate, endDate,tempDate;
+    Date startDate, endDate,tempDate, textStartDate, textEndDate;
+    Calendar calendar = Calendar.getInstance();
     SimpleDateFormat simpleFormat = new SimpleDateFormat("MMM dd, yyyy");
     Data data;
+    long dayDiff=0;
     DataSnapshot snapshottemp;
     String[] categories = {"Clothes", "Food & Dining", "Transport", "Entertainment", "Grocery",
             "Medical", "Electricity", "Electronics equipments"};
@@ -63,9 +70,10 @@ public class AnalysisFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private int total;
+    private int total, textViewTotal;
     private PieChart pieChart;
     private DatabaseReference mExpenseDatabase;
+    private TextView comparision;
     private FirebaseAuth mAuth;
     private ImageButton btnDate;
     private Hashtable<String, Double> categorySum;
@@ -112,6 +120,7 @@ public class AnalysisFragment extends Fragment {
            categorySum.put(category, temp);
        }
        pieChart = myView.findViewById(R.id.pie_chart);
+       comparision = myView.findViewById(R.id.comparision);
        mAuth = FirebaseAuth.getInstance();
        FirebaseUser mUser = mAuth.getCurrentUser();
        String uid = mUser.getUid();
@@ -138,6 +147,7 @@ public class AnalysisFragment extends Fragment {
         materialDatePicker.addOnPositiveButtonClickListener(
                 new MaterialPickerOnPositiveButtonClickListener() {
 
+                    @RequiresApi(api = Build.VERSION_CODES.O)
                     @Override
                     public void onPositiveButtonClick(Object selection) {
                         Pair selectedDates = (Pair) materialDatePicker.getSelection();
@@ -146,10 +156,25 @@ public class AnalysisFragment extends Fragment {
 //              assigned variables
                         startDate = rangeDate.first;
                         endDate = rangeDate.second;
-//              Format the dates in ur desired display mode
+                        textStartDate = startDate;
+                        textEndDate = endDate;
 
+
+                        //dayDiff = ChronoUnit.DAYS.between(startDate, endDate);
+                        dayDiff = endDate.getTime() - startDate.getTime();
+                        System.out.println("Daydifferenece : "+ dayDiff);
+                        System.out.println("Daydifferenece : "+ TimeUnit.DAYS.convert(dayDiff,TimeUnit.MILLISECONDS));
+                        dayDiff = TimeUnit.DAYS.convert(dayDiff,TimeUnit.MILLISECONDS);
+//              Format the dates in ur desired display mode
+                        calendar.setTime(textStartDate);
+                        calendar.add(Calendar.DATE, -(int)dayDiff);
+                        textStartDate = calendar.getTime();
+                        calendar.setTime(textEndDate);
+                        calendar.add(Calendar.DATE, -(int)dayDiff);
+                        textEndDate = calendar.getTime();
 //              Display it by setText
                        System.out.println("SELECTED DATE : " +  simpleFormat.format(startDate) + " Second : " + simpleFormat.format(endDate));
+                        System.out.println("SELECTED DATE : " +  simpleFormat.format(textStartDate) + " Second : " + simpleFormat.format(textEndDate));
                        //String str_startDate = simpleFormat.format(startDate);
 
 
@@ -164,6 +189,7 @@ public class AnalysisFragment extends Fragment {
                         // will return selected date preview from the
                         // dialog
                         total =0;
+                        textViewTotal = 0;
                         //categorySum.clear();
                         for(String category : categories){
                             double temp = 0;
@@ -181,19 +207,38 @@ public class AnalysisFragment extends Fragment {
                                     && (tempDate.equals(endDate) || tempDate.before(endDate)))
                             {
                                 total+= data.getAmount();
-                                System.out.println("Total = " + total);
+                                //System.out.println("Total = " + total);
                                 double tempSum = categorySum.get(type);
-                                System.out.println("Tempsum = " + tempSum);
+                                //System.out.println("Tempsum = " + tempSum);
                                 categorySum.put(type, data.getAmount() + tempSum);
-                                System.out.println("In"+data.getAmount());
-                                System.out.println("In "+ simpleFormat.format(tempDate));
-                                System.out.println("Total:"+total);
+                                //System.out.println("In"+data.getAmount());
+                                //System.out.println("In "+ simpleFormat.format(tempDate));
+                                //System.out.println("Total:"+total);
                                 //int count = categorySum.containsKey(type) ? categorySum.get(type) : 0;
 
-                                System.out.println(categorySum);
+                                //System.out.println(categorySum);
                             }
-                            else {}
+                            if((tempDate.equals(textStartDate) || tempDate.after(textStartDate))
+                                    && (tempDate.equals(textEndDate) || tempDate.before(textEndDate)))
+                            {
+                                textViewTotal+= data.getAmount();
+                                //System.out.println("Total = " + total);
+                                //double tempSum = categorySum.get(type);
+                                //System.out.println("Tempsum = " + tempSum);
+                                //categorySum.put(type, data.getAmount() + tempSum);
+                                //System.out.println("In"+data.getAmount());
+                                //System.out.println("In "+ simpleFormat.format(tempDate));
+                                //System.out.println("Total:"+total);
+                                //int count = categorySum.containsKey(type) ? categorySum.get(type) : 0;
+
+                                //System.out.println(categorySum);
+                            }
+
                         }
+                        if(total>textViewTotal)
+                            comparision.setText("Your spending has increased by " + (total-textViewTotal) + "amount from last " + dayDiff + "days");
+                        else
+                            comparision.setText("Your spending has decreased by " + (textViewTotal-total) + "amount from last " + dayDiff + "days");
                         loadData();
                     }
 
