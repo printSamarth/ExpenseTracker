@@ -1,12 +1,6 @@
-import sys
-import requests
 import json
-import time
-from datetime import date
-from datetime import datetime
 from nsetools import Nse
 from flask import Flask, request, jsonify
-from firebase import firebase  
 from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
