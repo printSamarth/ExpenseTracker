@@ -40,10 +40,10 @@ public class MainActivity extends AppCompatActivity {
         mDialog = new ProgressDialog(this);
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            // User is signed in
-            startActivity(new Intent(getApplicationContext(), Home.class));
-        }
+//        if (user != null) {
+//            // User is signed in
+//            startActivity(new Intent(getApplicationContext(), Home.class));
+//        }
 
         login_btn.setOnClickListener(new View.OnClickListener() {
             @Override
