@@ -1,0 +1,8 @@
+---
+- name: Pull docker image of expensetracker app
+  hosts: all
+  tasks:
+    - name: Pull Expense Tracker app docker image
+      docker_image:
+        name: vaibhavi1998/expensetracker
+        source: pull
