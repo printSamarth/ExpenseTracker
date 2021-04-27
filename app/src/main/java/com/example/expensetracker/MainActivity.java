@@ -7,6 +7,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,6 +20,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+
 public class MainActivity extends AppCompatActivity {
     private EditText mEmail;
     private EditText mPass;
@@ -27,6 +29,41 @@ public class MainActivity extends AppCompatActivity {
     private TextView mSignUp;
     private ProgressDialog mDialog;
     private FirebaseAuth mAuth;
+    Boolean flag = false;
+
+    Boolean validate(String email, String pass){
+        if(email.length() < 6 || email.isEmpty()){
+            Toast.makeText(getApplicationContext(), "Email Required", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if(pass.length() < 6 || pass.isEmpty()){
+            Toast.makeText(getApplicationContext(), "Password Required", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        mDialog.setMessage("Processing..");
+        mDialog.show();
+
+        mAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){
+                    mDialog.dismiss();
+                    flag = true;
+                    startActivity(new Intent(getApplicationContext(), Home.class));
+                    Toast.makeText(getApplicationContext(), "Login successful ", Toast.LENGTH_SHORT).show();
+
+                }
+                else{
+                    mDialog.dismiss();
+                    Toast.makeText(getApplicationContext(), "Login Failed", Toast.LENGTH_SHORT).show();
+                }
+                Log.d("Main Activity", "From onComplete "+ flag);
+
+            }
+        });
+        return flag;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,41 +77,19 @@ public class MainActivity extends AppCompatActivity {
         mDialog = new ProgressDialog(this);
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-//        if (user != null) {
-//            // User is signed in
-//            startActivity(new Intent(getApplicationContext(), Home.class));
-//        }
+        if (user != null) {
+            // User is signed in
+            startActivity(new Intent(getApplicationContext(), Home.class));
+        }
 
         login_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String email = mEmail.getText().toString().trim();
                 String pass = mPass.getText().toString().trim();
-                if(TextUtils.isEmpty(email)){
-                    Toast.makeText(getApplicationContext(), "Email Required", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if(TextUtils.isEmpty(pass)){
-                    Toast.makeText(getApplicationContext(), "Password Required", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                mDialog.setMessage("Processing..");
-                mDialog.show();
-                mAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()){
-                            mDialog.dismiss();
-                            Toast.makeText(getApplicationContext(), "Login successful", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(getApplicationContext(), Home.class));
+                Boolean out = validate(email, pass);
+                Log.d("Main Activity", "Return from validate "+out);
 
-                        }
-                        else{
-                            mDialog.dismiss();
-                            Toast.makeText(getApplicationContext(), "Login Failed", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
             }
         });
 

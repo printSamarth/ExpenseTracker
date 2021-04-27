@@ -110,8 +110,13 @@ public class DashBoardFragment extends Fragment implements AdapterView.OnItemSel
 
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser mUser = mAuth.getCurrentUser();
-        String uid = mUser.getUid();
-
+        String uid = "";
+        try{
+            uid = mUser.getUid();
+        }
+        catch (Exception e){
+            Log.e("Dashboard", e.toString());
+        }
         mIncomeDatabase = FirebaseDatabase.getInstance().getReference().child("IncomeData").child(uid);
         mExpenseDatabase = FirebaseDatabase.getInstance().getReference().child("ExpenseData").child(uid);
         mBalance = FirebaseDatabase.getInstance().getReference().child("Balance").child(uid);
@@ -187,16 +192,21 @@ public class DashBoardFragment extends Fragment implements AdapterView.OnItemSel
 
                     Data data = m.getValue(Data.class);
                     total+= data.getAmount();
-                    if(data.getMedium().equals("Bank")) {
-                        //globalBank+= data.getAmount();
-                        incomeBank+= data.getAmount();
+                    try{
+                        if(data.getMedium().equals("Bank")) {
+                            //globalBank+= data.getAmount();
+                            incomeBank+= data.getAmount();
+                        }
+                        else{
+                            //globalCash+=data.getAmount();
+                            incomeCash+= data.getAmount();
+                        }
+                        String temp = String.valueOf(total);
+                        totalincomeresult.setText(temp);
                     }
-                    else{
-                        //globalCash+=data.getAmount();
-                        incomeCash+= data.getAmount();
+                    catch (Exception e){
+                        Log.e("DashBoardFragment", e.toString());
                     }
-                    String temp = String.valueOf(total);
-                    totalincomeresult.setText(temp);
                 }
                 globalBank = incomeBank - expenseBank;
                 globalCash = incomeCash - expenseCash;

@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+    android:id="@+id/dashboard"
     tools:context=".DashBoardFragment">
 
     <androidx.cardview.widget.CardView
@@ -32,6 +33,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Total Income"
+                        android:id="@+id/Total_Income"
                         android:textAppearance="?android:textAppearanceLarge"
                         android:textColor="@color/black" />
 
