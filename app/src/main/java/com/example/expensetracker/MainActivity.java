@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private Button login_btn;
     private TextView mForgetPass;
     private TextView mSignUp;
+    private static final String TAG = MainActivity.class.getSimpleName();
     private ProgressDialog mDialog;
     private FirebaseAuth mAuth;
     Boolean flag = false;
@@ -49,15 +50,17 @@ public class MainActivity extends AppCompatActivity {
                 if(task.isSuccessful()){
                     mDialog.dismiss();
                     flag = true;
+                    Log.i(TAG,"Login Successful Moving to Home Activity");
                     startActivity(new Intent(getApplicationContext(), Home.class));
                     Toast.makeText(getApplicationContext(), "Login successful ", Toast.LENGTH_SHORT).show();
 
                 }
                 else{
                     mDialog.dismiss();
+                    Log.e(TAG,"Login Failed Enter correct username or password");
                     Toast.makeText(getApplicationContext(), "Login Failed", Toast.LENGTH_SHORT).show();
                 }
-                Log.d("Main Activity", "From onComplete "+ flag);
+                //Log.d("Main Activity", "From onComplete "+ flag);
 
             }
         });
@@ -68,13 +71,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        Log.i(TAG,"Inside on create Method");
         mEmail = findViewById(R.id.email_login);
         mPass = findViewById(R.id.password_login);
         login_btn = findViewById(R.id.button_login);
         mForgetPass = findViewById(R.id.forget_password);
         mSignUp = findViewById(R.id.signup_registration);
         mDialog = new ProgressDialog(this);
+
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
@@ -87,6 +91,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String email = mEmail.getText().toString().trim();
                 String pass = mPass.getText().toString().trim();
+                Log.i(TAG,"Username - "+email);
+                Log.i(TAG,"Password - "+pass);
+                Log.i(TAG,"Validating username and password");
                 Boolean out = validate(email, pass);
                 Log.d("Main Activity", "Return from validate "+out);
 
@@ -96,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
         mSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.i(TAG,"Moving to registration Activity to register a user");
                 startActivity(new Intent(getApplicationContext(), Registration.class));
             }
         });
@@ -103,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
         mForgetPass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.i(TAG,"Forgot password moving to reset activity");
                 startActivity(new Intent(getApplicationContext(), Reset.class));
             }
         });
