@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 import androidx.appcompat.widget.Toolbar;
@@ -34,12 +35,13 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     private ExpenseFragment expenseFragment;
     private DashBoardFragment dashBoardFragment;
     private FirebaseAuth mAuth;
+    private static final String TAG = Home.class.getSimpleName();
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
+        Log.i(TAG,"Inside oncreate method");
         Toolbar toolbar = findViewById(R.id.mytoolbar);
         toolbar.setTitle("Expense Tracker");
         setSupportActionBar(toolbar);
@@ -67,18 +69,22 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                 switch (item.getItemId()){
 
                     case R.id.dashboard:
+                        Log.i(TAG,"Inside Dashboard Fragment");
                         setFragment(dashBoardFragment);
                         bottomNavigationView.setItemBackgroundResource(R.color.dashboard_color);
                         return true;
                     case R.id.income:
+                        Log.i(TAG,"Inside Income Fragment");
                         setFragment(incomeFragment);
                         bottomNavigationView.setItemBackgroundResource(R.color.income_color);
                         return true;
                     case R.id.expense:
+                        Log.i(TAG,"Inside Expense Fragment");
                         setFragment(expenseFragment);
                         bottomNavigationView.setItemBackgroundResource(R.color.expense_color);
                         return true;
                     default:
+                        Log.e(TAG,"Wrong option");
                         return false;
                 }
 
@@ -106,20 +112,25 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         Fragment fragment = null;
         switch (itemId){
             case R.id.dashboard:
+                Log.i(TAG,"Inside dashboard Fragment");
                 fragment = new DashBoardFragment();
                 break;
 
             case R.id.income:
+                Log.i(TAG,"Inside income Fragment");
                 fragment = new IncomeFragment();
                 break;
 
             case R.id.expense:
+                Log.i(TAG,"Inside Expense Fragment");
                 fragment = new ExpenseFragment();
                 break;
             case R.id.analytics:
+                Log.i(TAG,"Inside analytics Fragment");
                 fragment = new AnalysisFragment();
                 break;
             case R.id.stocks:
+                Log.i(TAG,"Inside stocks Fragment");
                 fragment = new Stocks();
                 break;
             case R.id.logout:

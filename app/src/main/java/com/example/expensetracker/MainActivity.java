@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
     Boolean validate(String email, String pass){
         if(email.length() < 6 || email.isEmpty()){
+
             Toast.makeText(getApplicationContext(), "Email Required", Toast.LENGTH_SHORT).show();
             return false;
         }
