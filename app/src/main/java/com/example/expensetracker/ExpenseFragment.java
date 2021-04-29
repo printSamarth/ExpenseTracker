@@ -187,7 +187,7 @@ public class ExpenseFragment extends Fragment implements AdapterView.OnItemSelec
                         catch (Exception e){
                             Log.e(TAG, e.toString());
                         }
-                        
+
                         Log.i(TAG,"Update Function called to update selected transaction");
                         updateDateItem();
                     }

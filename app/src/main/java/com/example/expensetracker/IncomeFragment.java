@@ -111,9 +111,19 @@ public class IncomeFragment extends Fragment implements AdapterView.OnItemSelect
         View myView =  inflater.inflate(R.layout.fragment_income, container, false);
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser mUser = mAuth.getCurrentUser();
-        String uid = mUser.getUid();
-        mIncomeDatabase = FirebaseDatabase.getInstance().getReference().child("IncomeData").child(uid);
-
+        String uid = "";
+        try {
+            uid = mUser.getUid();
+        }
+        catch (Exception e){
+            Log.e(TAG, e.toString());
+        }
+        try {
+            mIncomeDatabase = FirebaseDatabase.getInstance().getReference().child("IncomeData").child(uid);
+        }
+        catch (Exception e){
+            Log.e(TAG, e.toString());
+        }
         incomeTotal = myView.findViewById(R.id.income_text_result);
         recyclerView = myView.findViewById(R.id.recycler_id_income);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -128,13 +138,14 @@ public class IncomeFragment extends Fragment implements AdapterView.OnItemSelect
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Log.i(TAG,"Calcuating total income of current user");
                 int totalIncome = 0;
+                String stToalVal = "";
                 for(DataSnapshot ds: snapshot.getChildren()){
                     Data data = ds.getValue(Data.class);
                     totalIncome+= data.getAmount();
-                    String stToalVal = String.valueOf(totalIncome);
-                    Log.i(TAG,"Total Income - "+ stToalVal);
+                    stToalVal = String.valueOf(totalIncome);
                     incomeTotal.setText(stToalVal);
                 }
+                Log.i(TAG,"Total Income - "+ stToalVal);
 
             }
 
@@ -166,11 +177,16 @@ public class IncomeFragment extends Fragment implements AdapterView.OnItemSelect
                 myViewHolder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Log.i(TAG,"Selected a transaction");
-                        post_key = getRef(i).getKey();
-                        Log.i(TAG,"Getting key for selected Transaction");
-                        description = data.getDescription();
-                        amount = data.getAmount();
+                        try {
+                            Log.i(TAG, "Selected a transaction");
+                            post_key = getRef(i).getKey();
+                            Log.i(TAG, "Getting key for selected Transaction");
+                            description = data.getDescription();
+                            amount = data.getAmount();
+                        }
+                        catch (Exception e){
+                            Log.e(TAG, e.toString());
+                        }
                         Log.i(TAG,"Update Function called to update selected transaction");
                         updateDataItem();
 
@@ -260,9 +276,17 @@ public class IncomeFragment extends Fragment implements AdapterView.OnItemSelect
                     else
                         Log.i(TAG,"Amount is - "+amount_string);
                 String mDate = DateFormat.getDateInstance().format(new Date());
+                Log.i(TAG,"Date - "+mDate);
+                Log.i(TAG,"Income Type - "+spinnerType);
+                Log.i(TAG,"Payment medium - "+mediumType);
                 System.out.println("INCOMEFRAGMENT ----"+spinnerType);
                 Data data = new Data(amount, spinnerType, post_key, mDate, description, mediumType);
-                mIncomeDatabase.child(post_key).setValue(data);
+                try {
+                    mIncomeDatabase.child(post_key).setValue(data);
+                }
+                catch (Exception e){
+                    Log.e(TAG, e.toString());
+                }
                 Log.i(TAG,"Transaction data Updated");
                 dialog.dismiss();
                 Toast.makeText(myView.getContext(), "Data updated", Toast.LENGTH_SHORT).show();
@@ -273,7 +297,12 @@ public class IncomeFragment extends Fragment implements AdapterView.OnItemSelect
             @Override
             public void onClick(View v)
             {
-                mIncomeDatabase.child(post_key).removeValue();
+                try {
+                    mIncomeDatabase.child(post_key).removeValue();
+                }
+                catch (Exception e){
+                    Log.e(TAG, e.toString());
+                }
                 dialog.dismiss();
                 Log.i(TAG,"Income Transaction data deleted");
                 Toast.makeText(myView.getContext(), "Data removed", Toast.LENGTH_SHORT).show();
@@ -288,12 +317,14 @@ public class IncomeFragment extends Fragment implements AdapterView.OnItemSelect
         Spinner spinner2 = (Spinner) parent;
         if(spinner1.getId() == R.id.type_edt_spinner_update) {
             spinnerType = spinner1.getItemAtPosition(position).toString();
+            Log.i(TAG,"Income type - "+spinnerType);
         }
         else{
             mediumType = spinner2.getItemAtPosition(position).toString();
+            Log.i(TAG,"Payment Medium - "+mediumType);
         }
 
-        Log.i(TAG,"Income type - "+mediumType);
+
         System.out.println("From on ItemSelected spinner Type" + spinnerType);
         System.out.println("From on ItemSelected medium Type" + mediumType);
 
