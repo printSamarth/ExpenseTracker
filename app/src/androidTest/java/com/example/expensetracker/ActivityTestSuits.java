@@ -9,7 +9,11 @@ import org.junit.runners.Suite;
         {
                 HomeTest.class,
                 MainActivityTest.class,
-                RegistrationTest.class}
+                RegistrationTest.class,
+                DashboardFragmentTest.class,
+                IncomeFragmentTest.class,
+                ExpenseFragmentTest.class
+        }
 )
 public class ActivityTestSuits {
 }

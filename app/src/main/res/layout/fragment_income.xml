@@ -6,6 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="#FFF1F3FC"
+    android:id="@+id/income_fragment"
     tools:context=".IncomeFragment">
 
     <androidx.cardview.widget.CardView
