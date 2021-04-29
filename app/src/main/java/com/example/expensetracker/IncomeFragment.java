@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,6 +61,7 @@ public class IncomeFragment extends Fragment implements AdapterView.OnItemSelect
     private int amount;
     private String post_key;
     private String mediumType;
+    private static final String TAG = IncomeFragment.class.getSimpleName();
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -105,6 +107,7 @@ public class IncomeFragment extends Fragment implements AdapterView.OnItemSelect
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        Log.i(TAG,"Inside on create method");
         View myView =  inflater.inflate(R.layout.fragment_income, container, false);
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser mUser = mAuth.getCurrentUser();
@@ -123,11 +126,13 @@ public class IncomeFragment extends Fragment implements AdapterView.OnItemSelect
         mIncomeDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Log.i(TAG,"Calcuating total income of current user");
                 int totalIncome = 0;
                 for(DataSnapshot ds: snapshot.getChildren()){
                     Data data = ds.getValue(Data.class);
                     totalIncome+= data.getAmount();
                     String stToalVal = String.valueOf(totalIncome);
+                    Log.i(TAG,"Total Income - "+ stToalVal);
                     incomeTotal.setText(stToalVal);
                 }
 
@@ -161,10 +166,12 @@ public class IncomeFragment extends Fragment implements AdapterView.OnItemSelect
                 myViewHolder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        Log.i(TAG,"Selected a transaction");
                         post_key = getRef(i).getKey();
-
+                        Log.i(TAG,"Getting key for selected Transaction");
                         description = data.getDescription();
                         amount = data.getAmount();
+                        Log.i(TAG,"Update Function called to update selected transaction");
                         updateDataItem();
 
                     }
@@ -206,6 +213,7 @@ public class IncomeFragment extends Fragment implements AdapterView.OnItemSelect
     }
 
     private void updateDataItem(){
+        Log.i(TAG,"Inside update function");
         AlertDialog.Builder mydialog = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         View myView = inflater.inflate(R.layout.update_data_layout, null);
@@ -242,13 +250,20 @@ public class IncomeFragment extends Fragment implements AdapterView.OnItemSelect
         btnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.i(TAG,"updating Income Transaction data");
                 description = edtDescription.getText().toString().trim();
+                Log.i(TAG,"Transaction description - "+description);
                 String amount_string = edtAmount.getText().toString().trim();
                 amount  = Integer.parseInt(amount_string);
+                    if(amount<0)
+                    Log.e(TAG,"Amount cannot be negative");
+                    else
+                        Log.i(TAG,"Amount is - "+amount_string);
                 String mDate = DateFormat.getDateInstance().format(new Date());
                 System.out.println("INCOMEFRAGMENT ----"+spinnerType);
                 Data data = new Data(amount, spinnerType, post_key, mDate, description, mediumType);
                 mIncomeDatabase.child(post_key).setValue(data);
+                Log.i(TAG,"Transaction data Updated");
                 dialog.dismiss();
                 Toast.makeText(myView.getContext(), "Data updated", Toast.LENGTH_SHORT).show();
             }
@@ -260,6 +275,7 @@ public class IncomeFragment extends Fragment implements AdapterView.OnItemSelect
             {
                 mIncomeDatabase.child(post_key).removeValue();
                 dialog.dismiss();
+                Log.i(TAG,"Income Transaction data deleted");
                 Toast.makeText(myView.getContext(), "Data removed", Toast.LENGTH_SHORT).show();
             }
         });
@@ -276,6 +292,8 @@ public class IncomeFragment extends Fragment implements AdapterView.OnItemSelect
         else{
             mediumType = spinner2.getItemAtPosition(position).toString();
         }
+
+        Log.i(TAG,"Income type - "+mediumType);
         System.out.println("From on ItemSelected spinner Type" + spinnerType);
         System.out.println("From on ItemSelected medium Type" + mediumType);
 
