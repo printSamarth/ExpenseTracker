@@ -235,16 +235,20 @@ public class DashBoardFragment extends Fragment implements AdapterView.OnItemSel
 
                     Data data = m.getValue(Data.class);
                     total+= data.getAmount();
-                    if(data.getMedium().equals("Bank")) {
-                        //globalBank-= data.getAmount();
-                        expenseBank+= data.getAmount();
+                    try {
+                        if (data.getMedium().equals("Bank")) {
+                            //globalBank-= data.getAmount();
+                            expenseBank += data.getAmount();
+                        } else {
+                            //globalCash-=data.getAmount();
+                            expenseCash += data.getAmount();
+                        }
+                        String temp = String.valueOf(total);
+                        totalexpenseresult.setText(temp);
                     }
-                    else{
-                        //globalCash-=data.getAmount();
-                        expenseCash+= data.getAmount();
+                    catch (Exception e){
+                        Log.e("DashBoardFragment", e.toString());
                     }
-                    String temp = String.valueOf(total);
-                    totalexpenseresult.setText(temp);
                 }
 
                 globalBank = incomeBank - expenseBank;

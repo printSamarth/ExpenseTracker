@@ -6,9 +6,10 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses(
-        {MainActivityTest.class,
-        HomeTest.class,
-        RegistrationTest.class}
+        {
+                HomeTest.class,
+                MainActivityTest.class,
+                RegistrationTest.class}
 )
 public class ActivityTestSuits {
 }

@@ -209,6 +209,7 @@ public class ExpenseFragment extends Fragment implements AdapterView.OnItemSelec
         View myview = inflater.inflate(R.layout.update_data_layout, null);
         mydialog.setView(myview);
 
+
         editAmount = myview.findViewById(R.id.amount_edt);
         editType = myview.findViewById(R.id.type_edt);
         Spinner edtTypeSpinner = (Spinner) myview.findViewById(R.id.type_edt_spinner_update);
@@ -266,7 +267,7 @@ public class ExpenseFragment extends Fragment implements AdapterView.OnItemSelec
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         Spinner spinner1 = (Spinner) parent;
         Spinner spinner2 = (Spinner) parent;
-        if(spinner1.getId() == R.id.type_edt_spinner) {
+        if(spinner1.getId() == R.id.type_edt_spinner_update) {
             spinnerType = spinner1.getItemAtPosition(position).toString();
         }
         else{

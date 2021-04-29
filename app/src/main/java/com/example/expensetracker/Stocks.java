@@ -212,6 +212,7 @@ public class Stocks extends Fragment {
                 MyViewHolder.class,
                 stocksDb
         ) {
+            //Loading data in recycler view.
             @Override
             protected void populateViewHolder(MyViewHolder myViewHolder, StockData stockData, int i) {
                 myViewHolder.setCode(stockData.getCode());

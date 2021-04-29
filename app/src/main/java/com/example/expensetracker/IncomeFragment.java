@@ -246,7 +246,8 @@ public class IncomeFragment extends Fragment implements AdapterView.OnItemSelect
                 String amount_string = edtAmount.getText().toString().trim();
                 amount  = Integer.parseInt(amount_string);
                 String mDate = DateFormat.getDateInstance().format(new Date());
-                Data data = new Data(amount, spinnerType, post_key,mDate, description, mediumType);
+                System.out.println("INCOMEFRAGMENT ----"+spinnerType);
+                Data data = new Data(amount, spinnerType, post_key, mDate, description, mediumType);
                 mIncomeDatabase.child(post_key).setValue(data);
                 dialog.dismiss();
                 Toast.makeText(myView.getContext(), "Data updated", Toast.LENGTH_SHORT).show();
@@ -269,7 +270,7 @@ public class IncomeFragment extends Fragment implements AdapterView.OnItemSelect
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         Spinner spinner1 = (Spinner) parent;
         Spinner spinner2 = (Spinner) parent;
-        if(spinner1.getId() == R.id.type_edt_spinner) {
+        if(spinner1.getId() == R.id.type_edt_spinner_update) {
             spinnerType = spinner1.getItemAtPosition(position).toString();
         }
         else{

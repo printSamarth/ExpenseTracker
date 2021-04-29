@@ -20,7 +20,7 @@ public class MainActivityTest {
     @Test
     public void testActivityInView() {
         ActivityScenario.launch(MainActivity.class);
-        onView(withId(R.id.main)).check(matches(isDisplayed()));
+        onView(withId(R.id.main_login)).check(matches(isDisplayed()));
     }
 
     @Test

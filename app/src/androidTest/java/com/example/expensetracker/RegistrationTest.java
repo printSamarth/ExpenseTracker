@@ -23,6 +23,6 @@ public class RegistrationTest {
     public void goBackToSignIn(){
         ActivityScenario.launch(Registration.class);
         onView(withId(R.id.signin_registration)).perform(click());
-        onView(withId(R.id.main)).check(matches(isDisplayed()));
+        onView(withId(R.id.main_login)).check(matches(isDisplayed()));
     }
 }
