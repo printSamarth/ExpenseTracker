@@ -114,6 +114,7 @@ public class AnalysisFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        Log.i(TAG,"Inside oncreate method");
        View myView = inflater.inflate(R.layout.fragment_analysis, container, false);
        categorySum = new Hashtable<String, Double>();
 
@@ -125,9 +126,20 @@ public class AnalysisFragment extends Fragment {
        comparision = myView.findViewById(R.id.comparision);
        mAuth = FirebaseAuth.getInstance();
        FirebaseUser mUser = mAuth.getCurrentUser();
-       String uid = mUser.getUid();
+       String uid ="";
+       try {
+           uid = mUser.getUid();
+       }
+       catch (Exception e){
+           Log.e(TAG, e.toString());
+       }
        setupPieChart();
-       mExpenseDatabase = FirebaseDatabase.getInstance().getReference().child("ExpenseData").child(uid);
+       try {
+           mExpenseDatabase = FirebaseDatabase.getInstance().getReference().child("ExpenseData").child(uid);
+       }
+       catch (Exception e){
+           Log.e(TAG, e.toString());
+       }
 
        btnDate = myView.findViewById(R.id.btnDate);
 
@@ -198,42 +210,46 @@ public class AnalysisFragment extends Fragment {
                             categorySum.put(category, temp);
                         }
                         for(DataSnapshot ds: snapshottemp.getChildren()) {
-                            data = ds.getValue(Data.class);
-                            type = data.getType();
                             try {
-                                tempDate = simpleFormat.parse(data.getDate());
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
-                            if((tempDate.equals(startDate) || tempDate.after(startDate))
-                                    && (tempDate.equals(endDate) || tempDate.before(endDate)))
-                            {
-                                total+= data.getAmount();
-                                //System.out.println("Total = " + total);
-                                double tempSum = categorySum.get(type);
-                                //System.out.println("Tempsum = " + tempSum);
-                                categorySum.put(type, data.getAmount() + tempSum);
-                                //System.out.println("In"+data.getAmount());
-                                //System.out.println("In "+ simpleFormat.format(tempDate));
-                                //System.out.println("Total:"+total);
-                                //int count = categorySum.containsKey(type) ? categorySum.get(type) : 0;
+                                data = ds.getValue(Data.class);
+                                type = data.getType();
+                                try {
+                                    tempDate = simpleFormat.parse(data.getDate());
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                    Log.e(TAG, e.toString());
+                                }
+                                if ((tempDate.equals(startDate) || tempDate.after(startDate))
+                                        && (tempDate.equals(endDate) || tempDate.before(endDate))) {
+                                    total += data.getAmount();
+                                    //System.out.println("Total = " + total);
+                                    double tempSum = categorySum.get(type);
+                                    //System.out.println("Tempsum = " + tempSum);
+                                    categorySum.put(type, data.getAmount() + tempSum);
+                                    //System.out.println("In"+data.getAmount());
+                                    //System.out.println("In "+ simpleFormat.format(tempDate));
+                                    //System.out.println("Total:"+total);
+                                    //int count = categorySum.containsKey(type) ? categorySum.get(type) : 0;
 
-                                //System.out.println(categorySum);
-                            }
-                            if((tempDate.equals(textStartDate) || tempDate.after(textStartDate))
-                                    && (tempDate.equals(textEndDate) || tempDate.before(textEndDate)))
-                            {
-                                textViewTotal+= data.getAmount();
-                                //System.out.println("Total = " + total);
-                                //double tempSum = categorySum.get(type);
-                                //System.out.println("Tempsum = " + tempSum);
-                                //categorySum.put(type, data.getAmount() + tempSum);
-                                //System.out.println("In"+data.getAmount());
-                                //System.out.println("In "+ simpleFormat.format(tempDate));
-                                //System.out.println("Total:"+total);
-                                //int count = categorySum.containsKey(type) ? categorySum.get(type) : 0;
+                                    //System.out.println(categorySum);
+                                }
+                                if ((tempDate.equals(textStartDate) || tempDate.after(textStartDate))
+                                        && (tempDate.equals(textEndDate) || tempDate.before(textEndDate))) {
+                                    textViewTotal += data.getAmount();
+                                    //System.out.println("Total = " + total);
+                                    //double tempSum = categorySum.get(type);
+                                    //System.out.println("Tempsum = " + tempSum);
+                                    //categorySum.put(type, data.getAmount() + tempSum);
+                                    //System.out.println("In"+data.getAmount());
+                                    //System.out.println("In "+ simpleFormat.format(tempDate));
+                                    //System.out.println("Total:"+total);
+                                    //int count = categorySum.containsKey(type) ? categorySum.get(type) : 0;
 
-                                //System.out.println(categorySum);
+                                    //System.out.println(categorySum);
+                                }
+                            }
+                            catch (Exception e){
+                                Log.e(TAG, e.toString());
                             }
 
                         }
@@ -241,6 +257,7 @@ public class AnalysisFragment extends Fragment {
                             comparision.setText("Your spending has increased by " + (total-textViewTotal) + "amount from last " + dayDiff + "days");
                         else
                             comparision.setText("Your spending has decreased by " + (textViewTotal-total) + "amount from last " + dayDiff + "days");
+                        Log.i(TAG, "calling load data function");
                         loadData();
                     }
 
@@ -276,6 +293,7 @@ public class AnalysisFragment extends Fragment {
                    System.out.println(categorySum);
 
                }
+               Log.i(TAG, "calling load data function");
                loadData();
            }
 
@@ -310,6 +328,7 @@ public class AnalysisFragment extends Fragment {
     public void loadData(){
         //System.out.println("From Load Data: "+categorySum);
         //System.out.println("From Load Data: "+total);
+        Log.i(TAG, "Inside load data function");
         ArrayList<PieEntry> entries = new ArrayList<>();
         String maxSpending = "";
         double max = 0;
@@ -327,7 +346,7 @@ public class AnalysisFragment extends Fragment {
             entries.add(new PieEntry((float)percentage, key));
         }
         pieChart.setCenterText("Highest spending on " + maxSpending);
-
+        Log.i(TAG, "Maximum spending is done on - "+maxSpending);
         ArrayList<Integer> colors = new ArrayList<>();
         for(int color: ColorTemplate.MATERIAL_COLORS){
             colors.add(color);
