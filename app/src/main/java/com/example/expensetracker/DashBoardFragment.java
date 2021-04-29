@@ -69,6 +69,7 @@ public class DashBoardFragment extends Fragment implements AdapterView.OnItemSel
     private String mParam1;
     private String mParam2;
     private boolean isOpen = false;
+    private static final String TAG = DashBoardFragment.class.getSimpleName();
     private String spinnerType, mediumType;
     private Animation fadOpen, fadClose;
     public DashBoardFragment() {
@@ -115,11 +116,16 @@ public class DashBoardFragment extends Fragment implements AdapterView.OnItemSel
             uid = mUser.getUid();
         }
         catch (Exception e){
-            Log.e("Dashboard", e.toString());
+            Log.e(TAG, e.toString());
         }
-        mIncomeDatabase = FirebaseDatabase.getInstance().getReference().child("IncomeData").child(uid);
-        mExpenseDatabase = FirebaseDatabase.getInstance().getReference().child("ExpenseData").child(uid);
-        mBalance = FirebaseDatabase.getInstance().getReference().child("Balance").child(uid);
+        try {
+            mIncomeDatabase = FirebaseDatabase.getInstance().getReference().child("IncomeData").child(uid);
+            mExpenseDatabase = FirebaseDatabase.getInstance().getReference().child("ExpenseData").child(uid);
+            mBalance = FirebaseDatabase.getInstance().getReference().child("Balance").child(uid);
+        }
+        catch (Exception e){
+            Log.e(TAG, e.toString());
+        }
 
         //Connect floating button to layout
         fab_main_btn = myview.findViewById(R.id.fb_main_plus_btn);
@@ -205,14 +211,14 @@ public class DashBoardFragment extends Fragment implements AdapterView.OnItemSel
                         totalincomeresult.setText(temp);
                     }
                     catch (Exception e){
-                        Log.e("DashBoardFragment", e.toString());
+                        Log.e(TAG, e.toString());
                     }
                 }
                 globalBank = incomeBank - expenseBank;
                 globalCash = incomeCash - expenseCash;
-                Log.d("DashBoard", "mIncome "+position++);
-                Log.d("Dashboard", "Bank "+globalBank);
-                Log.d("Dashboard", "Cash "+globalCash);
+                Log.i(TAG, "mIncome "+position++);
+                Log.i(TAG, "Bank Balance  "+globalBank);
+                Log.i(TAG, "Cash Left "+globalCash);
 
                 netBankText.setText(String.valueOf(globalBank));
                 netCashText.setText(String.valueOf(globalCash));
@@ -253,9 +259,9 @@ public class DashBoardFragment extends Fragment implements AdapterView.OnItemSel
 
                 globalBank = incomeBank - expenseBank;
                 globalCash = incomeCash - expenseCash;
-                Log.d("DashBoard", "mExpense "+position++);
-                Log.d("Dashboard", "Bank "+globalBank);
-                Log.d("Dashboard", "Cash "+globalCash);
+                Log.i(TAG, "mExpense "+position++);
+                Log.i(TAG, "Bank Balance "+globalBank);
+                Log.i(TAG, "Cash Left "+globalCash);
                 netBankText.setText(String.valueOf(globalBank));
                 netCashText.setText(String.valueOf(globalCash));
             }
@@ -311,6 +317,7 @@ public class DashBoardFragment extends Fragment implements AdapterView.OnItemSel
         });
     }
     public void incomeDataInsert(){
+        Log.i(TAG,"Inside Income data insert function");
         AlertDialog.Builder mydialog = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         View myview = inflater.inflate(R.layout.custom_layout_for_insertdata, null);
@@ -339,6 +346,7 @@ public class DashBoardFragment extends Fragment implements AdapterView.OnItemSel
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.i(TAG,"Inserting Expense Transaction data");
                 String description = edtType.getText().toString().trim();
                 String amnt = edtAmount.getText().toString().trim();
 
@@ -352,11 +360,28 @@ public class DashBoardFragment extends Fragment implements AdapterView.OnItemSel
                 }
                 int intamount = Integer.parseInt(amnt);
                 //Generate random key
-                String id = mIncomeDatabase.push().getKey();
-                String mDate = DateFormat.getDateInstance().format(new Date());
+                String id = "";
+                try {
+                    id = mIncomeDatabase.push().getKey();
+                }
+                catch (Exception e){
+                    Log.e(TAG, e.toString());
+                }
 
+                String mDate = DateFormat.getDateInstance().format(new Date());
+                Log.i(TAG,"Amount - "+amnt);
+                Log.i(TAG,"Description - "+description);
+                Log.i(TAG,"Date - "+mDate);
+                Log.i(TAG,"Income Type- "+spinnerType);
+                Log.i(TAG,"Payment Medium - "+mediumType);
                 Data data = new Data(intamount, spinnerType, id, mDate, description, mediumType);
-                mIncomeDatabase.child(id).setValue(data);
+                try {
+                    mIncomeDatabase.child(id).setValue(data);
+                }
+                catch (Exception e){
+                    Log.e(TAG, e.toString());
+                }
+                Log.i(TAG,"Income data Inserted");
                 Toast.makeText(getActivity(), "Data added.", Toast.LENGTH_SHORT).show();
 
                 animationFtbutton();
@@ -375,6 +400,7 @@ public class DashBoardFragment extends Fragment implements AdapterView.OnItemSel
     }
 
     public void expenseDataInsert(){
+        Log.i(TAG,"Inside Expense data insert function");
         AlertDialog.Builder mydialog = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         View myview = inflater.inflate(R.layout.custom_layout_for_insertdata, null);
@@ -406,6 +432,7 @@ public class DashBoardFragment extends Fragment implements AdapterView.OnItemSel
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.i(TAG,"Inserting Expense Transaction data");
                 String tmAmount = edtAmount.getText().toString().trim();
                 String tmDescription = edtType.getText().toString().trim();
                 if(TextUtils.isEmpty(tmDescription)){
@@ -417,14 +444,31 @@ public class DashBoardFragment extends Fragment implements AdapterView.OnItemSel
                     return;
                 }
                 int intamount = Integer.parseInt(tmAmount);
+                String id ="";
+                try {
+                    id = mExpenseDatabase.push().getKey();
+                }
+                catch (Exception e){
+                    Log.e(TAG, e.toString());
+                }
 
-                String id = mExpenseDatabase.push().getKey();
                 String mDate = DateFormat.getDateInstance().format(new Date());
+                Log.i(TAG,"Amount - "+tmAmount);
+                Log.i(TAG,"Description - "+tmDescription);
+                Log.i(TAG,"Date - "+mDate);
+                Log.i(TAG,"Expense Type- "+spinnerType);
+                Log.i(TAG,"Payment Medium - "+mediumType);
 
 
                 System.out.println("Frooooommmmmm "+mediumType);
                 Data data = new Data(intamount, spinnerType, id, mDate, tmDescription, mediumType);
-                mExpenseDatabase.child(id).setValue(data);
+                try {
+                    mExpenseDatabase.child(id).setValue(data);
+                }
+                catch (Exception e){
+                    Log.e(TAG, e.toString());
+                }
+                Log.i(TAG,"Expense data Inserted");
                 Toast.makeText(getActivity(), "Data added.", Toast.LENGTH_SHORT).show();
 
                 animationFtbutton();
@@ -450,9 +494,11 @@ public class DashBoardFragment extends Fragment implements AdapterView.OnItemSel
         Spinner spinner2 = (Spinner) parent;
         if(spinner1.getId() == R.id.type_edt_spinner) {
             spinnerType = spinner1.getItemAtPosition(position).toString();
+            Log.i(TAG,"type - "+spinnerType);
         }
         else{
             mediumType = spinner2.getItemAtPosition(position).toString();
+            Log.i(TAG,"Payment Medium - "+mediumType);
         }
         System.out.println("From on ItemSelected spinner Type" + spinnerType);
         System.out.println("From on ItemSelected medium Type" + mediumType);
