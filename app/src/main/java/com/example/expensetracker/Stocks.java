@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,6 +67,7 @@ public class Stocks extends Fragment {
 
     private String code_stock;
     private int unit;
+    private static final String TAG = Stocks.class.getSimpleName();
     private String post_key;
 
     private FirebaseAuth mAuth;
@@ -106,6 +108,7 @@ public class Stocks extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        Log.i(TAG, "Inside on create method");
         View myView = inflater.inflate(R.layout.fragment_stocks, container, false);
         code = myView.findViewById(R.id.code_stocks);
         units = myView.findViewById(R.id.unit_stocks);
@@ -113,10 +116,20 @@ public class Stocks extends Fragment {
         amount = myView.findViewById(R.id.amount_txt_stocks);
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser mUser = mAuth.getCurrentUser();
-        String uid = mUser.getUid();
+        String uid = "";
+        try {
+            uid = mUser.getUid();
+        }
+        catch (Exception e){
+            Log.e(TAG, e.toString());
+        }
 
-
-        stocksDb = FirebaseDatabase.getInstance().getReference().child("StocksData").child(uid);
+        try {
+            stocksDb = FirebaseDatabase.getInstance().getReference().child("StocksData").child(uid);
+        }
+        catch (Exception e){
+            Log.e(TAG, e.toString());
+        }
         recyclerView = myView.findViewById(R.id.recycler_id_stocks);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setReverseLayout(true);
@@ -146,21 +159,26 @@ public class Stocks extends Fragment {
             @Override
             public void onClick(View v) {
                 String temp = units.getText().toString().trim();
+                Log.i(TAG, "Stocks unit - "+temp);
                 if(TextUtils.isEmpty(temp)){
                     units.setError("Number of units required");
+                    Log.e(TAG, "Please enter stocks quantity");
                     return;
                 }
                 String cd = code.getText().toString().trim();
+                Log.i(TAG, "Company Share Code - "+cd);
                 if(TextUtils.isEmpty(cd)){
                     code.setError("Company code required");
+                    Log.e(TAG, "Please enter Company code");
                     return;
                 }
                 int unit = Integer.parseInt(temp);
                 String date = DateFormat.getDateInstance().format(new Date());
+                Log.i(TAG, "Date - "+date);
 
 
                 RequestQueue queue = Volley.newRequestQueue(getContext());
-
+                Log.i(TAG, "Sending API request");
                 JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,url+cd,
                         null, new Response.Listener<JSONObject>() {
                     @Override
@@ -171,16 +189,21 @@ public class Stocks extends Fragment {
                             System.out.println(response.toString() + " Units "+ unit);
                             amountDouble = response.getDouble(cd);
                             amountDouble = amountDouble * unit;
+                            Log.i(TAG, "Stock Amount - "+amountDouble);
                             System.out.println(amountDouble);
-
+                            Log.i(TAG, "Adding stocks data to database");
                             StockData data = new StockData(unit, cd, date,amountDouble);
                             System.out.println("From object "+data.getAmount());
-                            String id = stocksDb.push().getKey();
-                            stocksDb.child(id).setValue(data);
+
+                                String id = stocksDb.push().getKey();
+                                stocksDb.child(id).setValue(data);
+
+                            Log.i(TAG, "Stocks data Added");
                             Toast.makeText(getActivity(), "Data added.", Toast.LENGTH_SHORT).show();
                         }
                         catch (Exception e){
                             System.out.println(e);
+                            Log.e(TAG, e.toString());
                             Toast.makeText(getActivity(), "Error in data adding.", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -237,6 +260,7 @@ public class Stocks extends Fragment {
                                     amountDouble = response.getDouble(code_stock);
                                 }
                                 catch (Exception e){
+                                    Log.e(TAG, e.toString());
                                     System.out.println(e);
                                 }
 
@@ -255,6 +279,7 @@ public class Stocks extends Fragment {
                         System.out.println("Hello from onClick");
                         unit = stockData.getUnits();
                         amountDouble = amountDouble * unit;
+                        Log.i(TAG,"Inside Update function");
                         updateDateItem();
                     }
                 });
@@ -277,7 +302,7 @@ public class Stocks extends Fragment {
             RequestQueue queue = Volley.newRequestQueue(mView.getContext());
             String url = "http://10.0.2.2:5000/api/";
 
-
+            Log.i(TAG,"Making rest api call");
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,url+code,
                     null, new Response.Listener<JSONObject>() {
                 @Override
@@ -294,6 +319,7 @@ public class Stocks extends Fragment {
                         mAmount.setText(String.valueOf(amountDouble));
                     }
                     catch (Exception e){
+                        Log.e(TAG, e.toString());
                         System.out.println(e);
                     }
 
@@ -327,6 +353,7 @@ public class Stocks extends Fragment {
         }
     }
     public void updateDateItem(){
+        Log.i(TAG,"Inside Update Function");
         System.out.println("Hello start");
         AlertDialog.Builder mydialog = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = LayoutInflater.from(getActivity());
@@ -347,7 +374,14 @@ public class Stocks extends Fragment {
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                stocksDb.child(post_key).removeValue();
+                Log.i(TAG, "Inside Delete Function");
+                try {
+                    stocksDb.child(post_key).removeValue();
+                }
+                catch (Exception e) {
+                    Log.e(TAG, e.toString());
+                }
+                Log.i(TAG, "Stock data Deleted");
                 dialog.dismiss();
                 Toast.makeText(myview.getContext(), "Data removed", Toast.LENGTH_SHORT).show();
             }
@@ -356,12 +390,22 @@ public class Stocks extends Fragment {
         btnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.i(TAG, "Inside Update Function");
                 code_stock = editCode.getText().toString().trim();
                 unit = Integer.parseInt(editUnits.getText().toString().trim());
                 String date = DateFormat.getDateInstance().format(new Date());
-                StockData data = new StockData(unit, code_stock, date, amountDouble);
-                stocksDb.child(post_key).setValue(data);
+                Log.i(TAG, "Quantity -"+unit);
+                Log.i(TAG, "Date -"+date);
+                Log.i(TAG, "Amount -"+amountDouble);
 
+                StockData data = new StockData(unit, code_stock, date, amountDouble);
+                try {
+                    stocksDb.child(post_key).setValue(data);
+                }
+                catch (Exception e) {
+                    Log.e(TAG, e.toString());
+                }
+                Log.i(TAG, "Stock data Updated");
                 dialog.dismiss();
                 Toast.makeText(myview.getContext(), "Data updated", Toast.LENGTH_SHORT).show();
             }
