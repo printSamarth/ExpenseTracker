@@ -11,6 +11,7 @@ import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 
 //import android.util.Pair;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,6 +77,7 @@ public class AnalysisFragment extends Fragment {
     private TextView comparision;
     private FirebaseAuth mAuth;
     private ImageButton btnDate;
+    private static final String TAG = AnalysisFragment.class.getSimpleName();
     private Hashtable<String, Double> categorySum;
     public AnalysisFragment() {
         // Required empty public constructor
@@ -258,13 +260,17 @@ public class AnalysisFragment extends Fragment {
                    } catch (ParseException e) {
                        e.printStackTrace();
                    }
-
-                   total+= data.getAmount();
-                   double tempSum = categorySum.get(type);
-                   categorySum.put(type, data.getAmount() + tempSum);
-                   System.out.println("In"+data.getAmount());
-                   System.out.println("In "+ simpleFormat.format(tempDate));
-                   System.out.println("Total:"+total);
+                    try {
+                        total += data.getAmount();
+                        double tempSum = categorySum.get(type);
+                        categorySum.put(type, data.getAmount() + tempSum);
+                        System.out.println("In" + data.getAmount());
+                        System.out.println("In " + simpleFormat.format(tempDate));
+                        System.out.println("Total:" + total);
+                    }
+                    catch (Exception e){
+                        Log.e(TAG, e.toString());
+                    }
                    //int count = categorySum.containsKey(type) ? categorySum.get(type) : 0;
 
                    System.out.println(categorySum);

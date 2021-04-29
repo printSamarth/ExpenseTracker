@@ -114,9 +114,20 @@ public class ExpenseFragment extends Fragment implements AdapterView.OnItemSelec
         Log.i(TAG,"Inside on create method");
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser mUser = mAuth.getCurrentUser();
-        String uid = mUser.getUid();
+        String uid = "";
+        try{
+            uid = mUser.getUid();
+        }
+        catch (Exception e){
+            Log.e(TAG, e.toString());
+        }
         expenseTotal= myview.findViewById(R.id.expense_text_result);
-        mExpenseDatabase = FirebaseDatabase.getInstance().getReference().child("ExpenseData").child(uid);
+        try {
+            mExpenseDatabase = FirebaseDatabase.getInstance().getReference().child("ExpenseData").child(uid);
+        }
+        catch (Exception e){
+            Log.e(TAG, e.toString());
+        }
         recyclerView = myview.findViewById(R.id.recycler_id_expense);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setReverseLayout(true);
@@ -128,14 +139,15 @@ public class ExpenseFragment extends Fragment implements AdapterView.OnItemSelec
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 int totalIncome = 0;
+                String stToalVal = "";
                 Log.i(TAG,"Calcuating total Expense of current user");
                 for(DataSnapshot ds: snapshot.getChildren()){
                     Data data = ds.getValue(Data.class);
                     totalIncome+= data.getAmount();
-                    String stToalVal = String.valueOf(totalIncome);
-                    Log.i(TAG,"Total Expense - "+ stToalVal);
+                    stToalVal = String.valueOf(totalIncome);
                     expenseTotal.setText(stToalVal);
                 }
+                Log.i(TAG,"Total Expense - "+ stToalVal);
             }
 
             @Override
@@ -164,12 +176,18 @@ public class ExpenseFragment extends Fragment implements AdapterView.OnItemSelec
                 myViewHolder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Log.i(TAG,"Selected a transaction");
-                        post_key = getRef(i).getKey();
-                        Log.i(TAG,"Getting key for selected Transaction");
-                        description = data.getDescription();
-                        amount = data.getAmount();
-                        type =data.getType();
+                        try {
+                            Log.i(TAG, "Selected a transaction");
+                            post_key = getRef(i).getKey();
+                            Log.i(TAG, "Getting key for selected Transaction");
+                            description = data.getDescription();
+                            amount = data.getAmount();
+                            type = data.getType();
+                        }
+                        catch (Exception e){
+                            Log.e(TAG, e.toString());
+                        }
+                        
                         Log.i(TAG,"Update Function called to update selected transaction");
                         updateDateItem();
                     }
@@ -248,7 +266,12 @@ public class ExpenseFragment extends Fragment implements AdapterView.OnItemSelec
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mExpenseDatabase.child(post_key).removeValue();
+                try {
+                    mExpenseDatabase.child(post_key).removeValue();
+                }
+                catch (Exception e){
+                    Log.e(TAG, e.toString());
+                }
                 Log.i(TAG,"Expense Transaction data deleted");
                 dialog.dismiss();
                 Toast.makeText(myview.getContext(), "Data removed", Toast.LENGTH_SHORT).show();
@@ -267,6 +290,9 @@ public class ExpenseFragment extends Fragment implements AdapterView.OnItemSelec
                 else
                     Log.i(TAG,"Amount is - "+amount_string);
                 String date = DateFormat.getDateInstance().format(new Date());
+                Log.i(TAG,"Date - "+date);
+                Log.i(TAG,"Expense Type - "+spinnerType);
+                Log.i(TAG,"Payment Medium - "+mediumType);
                 Data data = new Data(amount, spinnerType, post_key, date, description, mediumType);
                 mExpenseDatabase.child(post_key).setValue(data);
                 Log.i(TAG,"Transaction data Updated");
@@ -285,11 +311,13 @@ public class ExpenseFragment extends Fragment implements AdapterView.OnItemSelec
         Spinner spinner2 = (Spinner) parent;
         if(spinner1.getId() == R.id.type_edt_spinner_update) {
             spinnerType = spinner1.getItemAtPosition(position).toString();
+            Log.i(TAG,"Expense type - "+spinnerType);
         }
         else{
             mediumType = spinner2.getItemAtPosition(position).toString();
+            Log.i(TAG,"Expense Medium - "+mediumType);
         }
-        Log.i(TAG,"Expense type - "+mediumType);
+
         System.out.println("From on ItemSelected spinner Type" + spinnerType);
         System.out.println("From on ItemSelected medium Type" + mediumType);
     }
