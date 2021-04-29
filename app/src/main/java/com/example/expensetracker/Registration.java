@@ -35,7 +35,12 @@ public class Registration extends AppCompatActivity {
         mPass = findViewById(R.id.password_registration);
         reg_btn = findViewById(R.id.button_registration);
         sign_in = findViewById(R.id.signin_registration);
-        mAuth = FirebaseAuth.getInstance();
+        try {
+            mAuth = FirebaseAuth.getInstance();
+        }
+        catch (Exception e){
+            Log.e(TAG, e.toString());
+        }
         Log.i(TAG,"initiating firebase instance");
         mDialog = new ProgressDialog(this);
         reg_btn.setOnClickListener(new View.OnClickListener() {

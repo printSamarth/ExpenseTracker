@@ -79,9 +79,18 @@ public class MainActivity extends AppCompatActivity {
         mForgetPass = findViewById(R.id.forget_password);
         mSignUp = findViewById(R.id.signup_registration);
         mDialog = new ProgressDialog(this);
-
-        mAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+         try {
+             mAuth = FirebaseAuth.getInstance();
+         }
+         catch (Exception e){
+             Log.e(TAG, e.toString());
+         }
+         try {
+             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+         }
+         catch (Exception e){
+             Log.e(TAG, e.toString());
+         }
 //        if (user != null) {
 //            // User is signed in
 //            startActivity(new Intent(getApplicationContext(), Home.class));

@@ -45,7 +45,12 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         Toolbar toolbar = findViewById(R.id.mytoolbar);
         toolbar.setTitle("Expense Tracker");
         setSupportActionBar(toolbar);
-        mAuth = FirebaseAuth.getInstance();
+        try {
+            mAuth = FirebaseAuth.getInstance();
+        }
+        catch (Exception e){
+            Log.e(TAG, e.toString());
+        }
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open
         , R.string.navigation_drawer_close);
