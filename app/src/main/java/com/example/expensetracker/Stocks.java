@@ -13,6 +13,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -51,7 +53,10 @@ public class Stocks extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    private static AutoCompleteTextView code;
+    private static final String[] STOCKS = new String[]{
+            "Dabur", "Tcs", "20microns", "3IINFOTECH","3MINDIA","8KMILES","A2ZINFRA","AARTIDRUGS","AARTIIND"
+    };
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -71,7 +76,8 @@ public class Stocks extends Fragment {
     private String post_key;
 
     private FirebaseAuth mAuth;
-    private EditText code, units, amount;
+    //private EditText code;
+    private EditText units, amount;
     private Button btnSave;
     public Stocks() {
         // Required empty public constructor
@@ -110,13 +116,19 @@ public class Stocks extends Fragment {
         // Inflate the layout for this fragment
         Log.i(TAG, "Inside on create method");
         View myView = inflater.inflate(R.layout.fragment_stocks, container, false);
-        code = myView.findViewById(R.id.code_stocks);
+        //code = myView.findViewById(R.id.code_stocks);
+        code = myView.findViewById(R.id.code_stocks_auto);
         units = myView.findViewById(R.id.unit_stocks);
         btnSave = myView.findViewById(R.id.btn_save_stocks);
         amount = myView.findViewById(R.id.amount_txt_stocks);
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser mUser = mAuth.getCurrentUser();
         String uid = "";
+
+        ArrayAdapter<String> adapterCode = new ArrayAdapter<String>(myView.getContext(),
+                android.R.layout.simple_list_item_1, STOCKS);
+        code.setAdapter(adapterCode);
+
         try {
             uid = mUser.getUid();
         }

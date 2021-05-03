@@ -68,12 +68,19 @@
         android:id="@+id/linear"
         android:orientation="horizontal">
 
-        <EditText
+<!--        <EditText-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:id="@+id/code_stocks"-->
+
+<!--            android:hint="Enter Code" />-->
+
+        <AutoCompleteTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/code_stocks"
-
-            android:hint="Enter Code" />
+            android:hint="Enter code"
+            android:completionThreshold="1"
+            android:id="@+id/code_stocks_auto"/>
 
         <EditText
             android:layout_width="wrap_content"
