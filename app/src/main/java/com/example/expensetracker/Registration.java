@@ -49,8 +49,8 @@ public class Registration extends AppCompatActivity {
                 Log.i(TAG,"Registration..");
                 String email = mEmail.getText().toString().trim();
                 String pass = mPass.getText().toString().trim();
-                Log.i(TAG,"Username - "+email);
-                Log.i(TAG,"Password - "+pass);
+                Log.i(TAG,"Username collected.");
+                Log.i(TAG,"Password collected.");
                 if(TextUtils.isEmpty(email)){
                     Log.e(TAG,"Email is Required");
                     Toast.makeText(getApplicationContext(), "Email Required", Toast.LENGTH_SHORT).show();

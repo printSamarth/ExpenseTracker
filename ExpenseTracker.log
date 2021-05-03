@@ -1,0 +1,87 @@
+05-03 09:04:58.763 11419 11419 I Registration: Registration..
+05-03 09:04:58.763 11419 11419 I Registration: Username collected.
+05-03 09:04:58.763 11419 11419 I Registration: Password collected.
+05-03 09:04:58.764 11419 11419 I Registration: Processing..
+05-03 09:04:58.921 11419 11419 E Registration: Registration Failed username already exists
+05-03 09:05:01.752 11419 11419 I Registration: Move to sign in page
+05-03 09:07:16.817 11903 11903 I MainActivity: Inside on create Method
+05-03 09:07:17.192 11903 11903 I MainActivity: Inside on create Method
+05-03 09:07:27.436 11903 11903 I MainActivity: Username collected
+05-03 09:07:27.436 11903 11903 I MainActivity: Password collected
+05-03 09:07:27.436 11903 11903 I MainActivity: Validating username and password
+05-03 09:42:03.070 12265 12265 I IncomeFragment: Inside on create method
+05-03 09:42:03.124 12265 12265 I IncomeFragment: Calcuating total income of current user
+05-03 09:42:03.126 12265 12265 I IncomeFragment: Total Income - 12400
+05-03 09:46:22.491 12265 12265 I IncomeFragment: Inside on create method
+05-03 09:46:22.534 12265 12265 I IncomeFragment: Calcuating total income of current user
+05-03 09:46:22.536 12265 12265 I IncomeFragment: Total Income - 12400
+05-03 09:42:32.826 12265 12265 I ExpenseFragment: Inside on create method
+05-03 09:42:32.849 12265 12265 I ExpenseFragment: Calcuating total Expense of current user
+05-03 09:42:32.850 12265 12265 I ExpenseFragment: Total Expense - 4000
+05-03 09:46:24.893 12265 12265 I ExpenseFragment: Inside on create method
+05-03 09:46:24.912 12265 12265 I ExpenseFragment: Calcuating total Expense of current user
+05-03 09:46:24.914 12265 12265 I ExpenseFragment: Total Expense - 4000
+05-03 09:43:08.399 12265 12265 I AnalysisFragment: Inside oncreate method
+05-03 09:43:08.425 12265 12265 I AnalysisFragment: calling load data function
+05-03 09:43:08.425 12265 12265 I AnalysisFragment: Inside load data function
+05-03 09:43:08.425 12265 12265 I AnalysisFragment: Maximum spending is done on - Clothes
+05-03 09:39:33.657 12265 12265 I DashBoardFragment: mExpense 0
+05-03 09:39:33.657 12265 12265 I DashBoardFragment: Bank Balance 0.0
+05-03 09:39:33.658 12265 12265 I DashBoardFragment: Cash Left 0.0
+05-03 09:39:33.713 12265 12265 I DashBoardFragment: mIncome 1
+05-03 09:39:33.713 12265 12265 I DashBoardFragment: Bank Balance  0.0
+05-03 09:39:33.713 12265 12265 I DashBoardFragment: Cash Left 0.0
+05-03 09:39:39.617 12265 12265 I DashBoardFragment: Inside Income data insert function
+05-03 09:39:40.076 12265 12265 I DashBoardFragment: Payment Medium - Cash
+05-03 09:39:40.076 12265 12265 I DashBoardFragment: type - Salary
+05-03 09:39:46.166 12265 12265 I DashBoardFragment: Payment Medium - Bank
+05-03 09:39:54.382 12265 12265 I DashBoardFragment: Inserting Expense Transaction data
+05-03 09:39:54.387 12265 12265 I DashBoardFragment: Amount - 12400
+05-03 09:39:54.387 12265 12265 I DashBoardFragment: Description - stipend
+05-03 09:39:54.387 12265 12265 I DashBoardFragment: Date - May 3, 2021
+05-03 09:39:54.387 12265 12265 I DashBoardFragment: Income Type- Salary
+05-03 09:39:54.387 12265 12265 I DashBoardFragment: Payment Medium - Bank
+05-03 09:39:54.397 12265 12265 I DashBoardFragment: Income data Inserted
+05-03 09:39:54.463 12265 12265 I DashBoardFragment: mIncome 2
+05-03 09:39:54.463 12265 12265 I DashBoardFragment: Bank Balance  12400.0
+05-03 09:39:54.464 12265 12265 I DashBoardFragment: Cash Left 0.0
+05-03 09:40:16.432 12265 12265 I DashBoardFragment: Inside Expense data insert function
+05-03 09:40:16.756 12265 12265 I DashBoardFragment: Payment Medium - Cash
+05-03 09:40:16.757 12265 12265 I DashBoardFragment: type - Clothes
+05-03 09:40:38.383 12265 12265 I DashBoardFragment: Payment Medium - Bank
+05-03 09:40:44.220 12265 12265 I DashBoardFragment: Inserting Expense Transaction data
+05-03 09:40:44.224 12265 12265 I DashBoardFragment: Amount - 4000
+05-03 09:40:44.224 12265 12265 I DashBoardFragment: Description - clothes
+05-03 09:40:44.224 12265 12265 I DashBoardFragment: Date - May 3, 2021
+05-03 09:40:44.224 12265 12265 I DashBoardFragment: Expense Type- Clothes
+05-03 09:40:44.224 12265 12265 I DashBoardFragment: Payment Medium - Bank
+05-03 09:40:44.226 12265 12265 I DashBoardFragment: Expense data Inserted
+05-03 09:40:44.294 12265 12265 I DashBoardFragment: mExpense 3
+05-03 09:40:44.294 12265 12265 I DashBoardFragment: Bank Balance 8400.0
+05-03 09:40:44.294 12265 12265 I DashBoardFragment: Cash Left 0.0
+05-03 09:41:07.550 12265 12265 I DashBoardFragment: mIncome 0
+05-03 09:41:07.550 12265 12265 I DashBoardFragment: Bank Balance  12400.0
+05-03 09:41:07.550 12265 12265 I DashBoardFragment: Cash Left 0.0
+05-03 09:41:07.551 12265 12265 I DashBoardFragment: mExpense 1
+05-03 09:41:07.551 12265 12265 I DashBoardFragment: Bank Balance 8400.0
+05-03 09:41:07.552 12265 12265 I DashBoardFragment: Cash Left 0.0
+05-03 09:43:05.598 12265 12265 I DashBoardFragment: mIncome 4
+05-03 09:43:05.598 12265 12265 I DashBoardFragment: Bank Balance  8400.0
+05-03 09:43:05.598 12265 12265 I DashBoardFragment: Cash Left 0.0
+05-03 09:43:05.599 12265 12265 I DashBoardFragment: mExpense 5
+05-03 09:43:05.599 12265 12265 I DashBoardFragment: Bank Balance 8400.0
+05-03 09:43:05.599 12265 12265 I DashBoardFragment: Cash Left 0.0
+05-03 09:46:26.150 12265 12265 I DashBoardFragment: mIncome 6
+05-03 09:46:26.150 12265 12265 I DashBoardFragment: Bank Balance  8400.0
+05-03 09:46:26.150 12265 12265 I DashBoardFragment: Cash Left 0.0
+05-03 09:46:26.152 12265 12265 I DashBoardFragment: mExpense 7
+05-03 09:46:26.152 12265 12265 I DashBoardFragment: Bank Balance 8400.0
+05-03 09:46:26.152 12265 12265 I DashBoardFragment: Cash Left 0.0
+05-03 09:39:31.443 12265 12265 I Home    : Inside oncreate method
+05-03 09:40:49.109 12265 12265 I Home    : Inside analytics Fragment
+05-03 09:41:07.457 12265 12265 I Home    : Inside dashboard Fragment
+05-03 09:42:03.044 12265 12265 I Home    : Inside Income Fragment
+05-03 09:42:32.799 12265 12265 I Home    : Inside Expense Fragment
+05-03 09:43:05.493 12265 12265 I Home    : Inside Dashboard Fragment
+
+

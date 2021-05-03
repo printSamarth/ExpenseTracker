@@ -101,8 +101,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String email = mEmail.getText().toString().trim();
                 String pass = mPass.getText().toString().trim();
-                Log.i(TAG,"Username - "+email);
-                Log.i(TAG,"Password - "+pass);
+                Log.i(TAG,"Username collected");
+                Log.i(TAG,"Password collected");
                 Log.i(TAG,"Validating username and password");
                 Boolean out = validate(email, pass);
                 Log.d("Main Activity", "Return from validate "+out);
