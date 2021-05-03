@@ -8,8 +8,8 @@ pipeline {
         stage('Git'){
             steps{
                 git 'https://github.com/printSamarth/ExpenseTracker'
-
-            }
+        
+            }    
         }
         stage('Clean') {
             steps {
@@ -25,14 +25,14 @@ pipeline {
         stage('Docker build to Image') {
                 steps {
                     script{
-                            imageName = docker.build "vaibhavi1998/expensetracker:latest"
+                            imageName = docker.build "ssvapp/expense-tracker:latest"   
                     }
                 }
             }
             stage('Push Docker Image to DockerHub') {
                 steps {
                     script{
-                            docker.withRegistry('','docker credential')
+                            docker.withRegistry('','7fd7ec98-6ea4-4c67-9d94-a9cfdb4592c6')
                             {
                                 imageName.push()
                             }
@@ -46,11 +46,11 @@ pipeline {
             }
         stage('DISTRIBUTE') {
             steps {
-                appCenter apiToken: 'c558b8d8f6af88d97e246cf9fe104069f00f59a3',
-                        ownerName: 'vaibhavitikone',
+                appCenter apiToken: '92a01f4cb9c3bb7a57de2984bde44c67b00f5979',
+                        ownerName: 'ssvapp',
                         appName: 'ExpenseTracker',
                         pathToApp: '**/*.apk',
-                        distributionGroups: 'developer'
+                        distributionGroups: 'tester'
             }
         }
     }
