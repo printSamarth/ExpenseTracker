@@ -4,5 +4,5 @@
   tasks:
     - name: Pull Expense Tracker app docker image
       docker_image:
-        name: vaibhavi1998/expensetracker
+        name: ssvapp/expense-tracker
         source: pull

@@ -1,6 +1,6 @@
 FROM ubuntu:18.04
 
-MAINTAINER Vaibhavi Tikone vaibhavitikone@gmail.com
+MAINTAINER ssvapp speproject039@gmail.com
 
 RUN apt-get update -y && \
     apt-get install -y python3-pip python3-dev
