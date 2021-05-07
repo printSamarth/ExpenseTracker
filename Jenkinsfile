@@ -19,13 +19,23 @@ pipeline {
         stage('Build'){
             steps{
                 sh './gradlew assembleDebug'
-                archiveArtifacts '**/*.apk'
+                archiveArtifacts '**/app-debug.apk'
+            }
+        }
+        stage('Install for testing'){
+            steps{
+                sh './gradlew installDebug'
+            }
+        }
+        stage('Testing'){
+            steps{
+                sh './gradlew connectedDebugAndroidTest'
             }
         }
         stage('Docker build to Image') {
                 steps {
                     script{
-                            imageName = docker.build "ssvapp/expense-tracker:latest"   
+                            imageName = docker.build "ssvapp/expense-tracker:latest"
                     }
                 }
             }
@@ -49,7 +59,7 @@ pipeline {
                 appCenter apiToken: '92a01f4cb9c3bb7a57de2984bde44c67b00f5979',
                         ownerName: 'ssvapp',
                         appName: 'ExpenseTracker',
-                        pathToApp: '**/*.apk',
+                        pathToApp: '**/app-debug.apk',
                         distributionGroups: 'tester'
             }
         }
