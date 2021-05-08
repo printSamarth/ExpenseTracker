@@ -49,11 +49,13 @@ pipeline {
                     }
                 }
             }
-            stage('Pull Docker Image') {
-                steps {
-                   ansiblePlaybook becomeUser: null, colorized: true, disableHostKeyChecking: true, installation: 'Ansible', inventory: 'deploy-docker/inventory', playbook: 'deploy-docker/deploy-image.yml', sudoUser: null
-                }
-            }
+        stage('Pull Docker Image') {
+                        steps {
+                           ansiblePlaybook becomeUser: null, colorized: true, disableHostKeyChecking: true,
+                           installation: 'Ansible', inventory: 'deploy-docker/inventory',
+                           playbook: 'deploy-docker/deploy-image.yml', sudoUser: null
+                        }
+                    }
         stage('DISTRIBUTE') {
             steps {
                 appCenter apiToken: '92a01f4cb9c3bb7a57de2984bde44c67b00f5979',

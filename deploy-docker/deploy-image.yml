@@ -1,8 +1,8 @@
 ---
-- name: Pull docker image of expensetracker app
+- name: Pull docker image of flask server
   hosts: all
   tasks:
-    - name: Pull Expense Tracker app docker image
+    - name: Pull flask server docker image
       docker_image:
         name: ssvapp/expense-tracker
         source: pull

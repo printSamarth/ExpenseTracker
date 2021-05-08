@@ -83,5 +83,24 @@
 05-03 09:42:03.044 12265 12265 I Home    : Inside Income Fragment
 05-03 09:42:32.799 12265 12265 I Home    : Inside Expense Fragment
 05-03 09:43:05.493 12265 12265 I Home    : Inside Dashboard Fragment
+05-08 12:34:37.863 19846 19846 I MainActivity: Inside on create Method
+05-08 12:34:45.032 19846 19846 I MainActivity: Username collected
+05-08 12:34:45.032 19846 19846 I MainActivity: Password collected
+05-08 12:34:45.032 19846 19846 I MainActivity: Validating username and password
+05-08 12:34:46.517 19846 19846 I MainActivity: Login Successful Moving to Home Activity
+05-08 12:33:43.615 19180 19180 I AnalysisFragment: Inside oncreate method
+05-08 12:33:43.722 19180 19180 I AnalysisFragment: calling load data function
+05-08 12:33:43.723 19180 19180 I AnalysisFragment: Inside load data function
+05-08 12:33:43.724 19180 19180 I AnalysisFragment: Maximum spending is done on - Clothes
+05-08 12:34:33.827 19180 19180 I AnalysisFragment: Inside oncreate method
+05-08 12:34:33.915 19180 19180 I AnalysisFragment: calling load data function
+05-08 12:34:33.915 19180 19180 I AnalysisFragment: Inside load data function
+05-08 12:34:33.915 19180 19180 I AnalysisFragment: Maximum spending is done on - Clothes
+05-08 12:30:17.594 19180 19180 I Home    : Inside oncreate method
+05-08 12:33:33.127 19180 19180 I Home    : Inside Dashboard Fragment
+05-08 12:33:37.259 19180 19180 I Home    : Inside Income Fragment
+05-08 12:33:40.207 19180 19180 I Home    : Inside Expense Fragment
+05-08 12:33:43.579 19180 19180 I Home    : Inside analytics Fragment
+05-08 12:33:47.142 19180 19180 I Home    : Inside stocks Fragment
 
 
