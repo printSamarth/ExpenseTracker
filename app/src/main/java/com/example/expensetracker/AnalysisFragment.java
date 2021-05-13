@@ -345,7 +345,11 @@ public class AnalysisFragment extends Fragment {
             percentage = ((double)temp) / (double)total;
             entries.add(new PieEntry((float)percentage, key));
         }
-        pieChart.setCenterText("Highest spending on " + maxSpending);
+        String message = "Highest spending on ";
+        if(maxSpending.equals("")){
+            message = "No expense data found.";
+        }
+        pieChart.setCenterText(message + maxSpending);
         Log.i(TAG, "Maximum spending is done on - "+maxSpending);
         ArrayList<Integer> colors = new ArrayList<>();
         for(int color: ColorTemplate.MATERIAL_COLORS){
