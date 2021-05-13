@@ -41,7 +41,7 @@ public class Registration extends AppCompatActivity {
         catch (Exception e){
             Log.e(TAG, e.toString());
         }
-        Log.i(TAG,"initiating firebase instance");
+        Log.i(TAG,"Initiating firebase instance");
         mDialog = new ProgressDialog(this);
         reg_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,7 +87,7 @@ public class Registration extends AppCompatActivity {
         sign_in.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i(TAG,"Move to sign in page");
+                Log.i(TAG,"Move to Login page");
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
             }
         });
